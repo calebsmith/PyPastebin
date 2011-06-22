@@ -1,0 +1,54 @@
+<h1>PyPasteys</h1>
+
+<!--Show recent code pastes (that are not flagged as private)-->
+{% if pastes|length > 0 %}
+
+    <!--Heading-->
+    <p>All code pastes:
+        <input type="button" value="View All Pastes" onClick="window.location='/pastey/list.html'">
+    </p>
+    
+    <ul>
+    
+    {% for paste, css_style in pastes %}    
+
+        <!--Number of the entry-->
+		<p>{{forloop.counter}}. <a href="{{paste.get_absolute_url}}" target="_blank">{{paste.title|title}}</a> 
+        
+        <!--Author-->
+		by 
+		{% if paste.author != 'an unknown author' %}
+		    {{paste.author|title}}
+	    {% else %}
+	        {{paste.author}}
+        {% endif %}
+		
+		<!--Language-->
+		written in 
+		{% if paste.language %}
+		    {{paste.get_language_display|title}}
+	    {% else %}
+	        an unspecified programming language
+        {% endif %}
+		
+        <!--Date/Time-->
+        on {{paste.pub_date}}
+		</p>
+		
+        <!--Code snippet-->
+        <style>{{css_style}}</style>
+        {{paste.code_paste|safe}}
+					
+    {% endfor %}
+    </ul>    
+    
+{% else %}
+
+    <!--Message if no pastes are available-->
+    <p>No code pastes are available.</p>
+
+{% endif %}
+
+<!--Link back to paste form-->
+<br />
+<input type="button" value="Make a new paste" onClick="window.location='/pastey/'">
