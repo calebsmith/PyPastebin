@@ -16,7 +16,7 @@ def pretty_pastes(paste_list):
 
     return zip(paste_list, css_styles)
 
-def pretty_print(*args):	
+def pretty_print(paste, style_choice):	
     """Use Pygments library to highlight a TextField       
 
     returns str1, str2
@@ -33,13 +33,6 @@ def pretty_print(*args):
         <style> {{style_output|safe}} </style>
         {{pretty_text_output|safe}}
     """
-    paste = args[0]
-    style_choice = Style()
-    try:
-        style_choice = args[1]
-    except:
-        pass
-    
     if paste.language:lexer = get_lexer_by_name(paste.language, stripall=True)
     if not paste.language: lexer = guess_lexer(paste.code_paste, stripall=True)		
     if not style_choice.highlight: style_choice.highlight = 'colorful'	

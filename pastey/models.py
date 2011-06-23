@@ -31,7 +31,7 @@ class CodeForm(ModelForm):
 
     class Meta:
         model = Code
-        exclude = ('pub_date','private')
+        exclude = ('pub_date',)
 
     def save(self):
         code = super(CodeForm, self).save(commit=False)

@@ -29,8 +29,7 @@ def detail(request, code_id):
     pretty_code, css_style = pretty_print(paste, style_choice)
     return render_to_response('pastey/detail.html',{'paste': paste, 'code': pretty_code, 'css_style': css_style, 'style_chooser': style_menu}, context_instance=RequestContext(request))
 
-def list_page(request):
-
+def list_page(request, list_id):
     paste_list = Code.objects.all().order_by('-pub_date')
     pastes = pretty_pastes(paste_list)    
  
@@ -38,7 +37,7 @@ def list_page(request):
 	
 def index(request): 
 
-    paste_list = Code.objects.all().order_by('-pub_date')[:20]
+    paste_list = Code.objects.all().order_by('-pub_date')[:10]
     pastes = pretty_pastes(paste_list)
     
     #form handling	
