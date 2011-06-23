@@ -48,7 +48,7 @@ def index(request):
             return redirect(a)      
 	   
     else: #maintain form data and redirect
-        form = CodeForm() 
+        form = CodeForm()
         
 	
     
