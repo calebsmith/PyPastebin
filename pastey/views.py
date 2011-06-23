@@ -29,16 +29,23 @@ def detail(request, code_id):
     pretty_code, css_style = pretty_print(paste, style_choice)
     return render_to_response('pastey/detail.html',{'paste': paste, 'code': pretty_code, 'css_style': css_style, 'style_chooser': style_menu}, context_instance=RequestContext(request))
 
-def list_page(request, list_id):
-    paste_list = Code.objects.all().order_by('-pub_date')
+def list_page(request):
+    paste_list = list(Code.objects.exclude(private = True).order_by('-pub_date'))
+    pastes = tersify(paste_list, 400)
     pastes = pretty_pastes(paste_list)    
  
     return render_to_response('pastey/list.html',{'pastes': pastes})
 	
 def index(request): 
 
-    paste_list = Code.objects.all().order_by('-pub_date')[:10]
-    pastes = pretty_pastes(paste_list)
+    pastes = list(Code.objects.exclude(private = True).order_by('-pub_date'))  
+    
+    #limit to 5 entries
+    pastes = pastes[:5]
+    #limit each code paste to 400
+    pastes = tersify(pastes, 400)       
+    #highlight text 
+    pastes = pretty_pastes(pastes)
     
     #form handling	
     if request.method == 'POST': 
@@ -48,11 +55,18 @@ def index(request):
             return redirect(a)      
 	   
     else: #maintain form data and redirect
-        form = CodeForm()
-        
+        form = CodeForm()        
 	
     
-    return render_to_response('pastey/index.html', {'form': form, 'pastes': pastes}, context_instance=RequestContext(request))	
+    return render_to_response('pastey/index.html', 
+        {'form': form, 'pastes': pastes}, context_instance=RequestContext(request))	
     
     
-
+def tersify(pastes, charlimit=400):
+    """returns a list of Code objects with a hard limit of 400 characters and appending a ... at the end
+    """
+    for paste in pastes:
+        if len(paste.code_paste) > charlimit or charlimit == 0:
+            paste.code_paste = paste.code_paste[:charlimit]
+            paste.code_paste += '...'
+    return pastes
