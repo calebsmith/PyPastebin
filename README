@@ -1,0 +1,34 @@
+PyPastey
+
+This code was developed by Caleb Smith under the GPL. Feel free to use and
+License:
+modify as desired but please maintain credit to the author.
+
+About:
+A pastebin implemented with Python, Django, and the Pygments library.
+
+Use:
+To run, untar the file, enter the directory and run the Django development 
+server. This can be accomplished as follows from a terminal:
+tar -xf paste.tar.gz
+cd paste
+./manage.py runserver
+
+A port number can be specified if necessary, but the default is 8000. To 
+specify a port, such as 8080, use the following:
+./manage.py runserver 8080
+
+To connect, type the following in a browser:
+localhost:8000/
+
+The default admin site can be reached through this URL:
+localhost:8000/admin
+
+When pasting, the user must paste some text in the "Code" text box, but all
+other fields are optional and obtain default values upon submission. The text 
+highlighting library, Pygments, uses a lexer that corresponds to the user's 
+choice and attempts to guess the lexer in the case that the user has not 
+provided the language.
+
+In the detail view of a paste, the user may choose a different "style" for the 
+text highlighting. The default style is called 'colorful'. 
