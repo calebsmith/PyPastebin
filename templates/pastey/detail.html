@@ -3,7 +3,7 @@
 <div id= "headers">
 
     <!--Title-->
-    <h1>{{paste.title|title}}</h1>
+    <h2>{{paste.title|title}}</h2>
     
     <!--Author-->
     <h2>
@@ -27,7 +27,7 @@
         {% if paste.get_language_display %}
             {{paste.get_language_display}}
         {% else %} 
-            an undefined programming language
+            an unspecified programming language
         {% endif %} 
     </p>
 </div>
@@ -44,10 +44,8 @@
 </form>
 
 <!--Formatted text-->
-{% autoescape off %}
-    <style>{{css_style}}</style>
-    {{code}}
-{% endautoescape %}
+ <style>{{css_style}}</style>
+{{code|safe}}
 
 <!--Link back to paste form-->
 <br />
