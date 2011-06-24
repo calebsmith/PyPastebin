@@ -1,5 +1,8 @@
+<head>
+    <link rel="stylesheet" type="text/css" href="{{STATIC_URL}}/css/main.css" />
+</head>
+<body>
 <h1>PyPasteys</h1>
-
 <!--Provide the form to create a paste-->
 <form action="#" method="POST">{% csrf_token %}	
 	<table>
@@ -19,7 +22,7 @@
     {% for paste, css_style in pastes %}    
 
         <!--Number of the entry-->
-		<p>{{forloop.counter}}. <a href="{{paste.get_absolute_url}}" target="_blank">{{paste.title|title}}</a> 
+		<p>{{forloop.counter}}. <a href="{{paste.get_absolute_url}}" target="_blank">{{paste.title|title}}
         
         <!--Author-->
 		by 
@@ -39,7 +42,7 @@
 		
         <!--Date/Time-->
         on {{paste.pub_date}}
-		</p>
+		</p></a>
 		
         <!--Code snippet-->
         <style>{{css_style}}</style>
@@ -54,4 +57,4 @@
     <p>No code pastes are available.</p>
 
 {% endif %}
-
+</body>
