@@ -6,8 +6,9 @@ from pygments.styles import get_style_by_name
 from pastey.models import Style
 
 def pretty_pastes(paste_list):
+    """
+    """
     style_choice = Style()  
-    #paste_list = list(paste_list)
     css_styles = []
 
     for paste in paste_list:
