@@ -5,9 +5,6 @@ from django.forms import ModelForm
 from django import forms
 from django.core.exceptions import ValidationError
 
-from pygments.styles import get_all_styles
-from pygments.lexers import get_all_lexers
-
 from pastey.choices import LANG_CHOICES, STYLE_CHOICES
 
 class Code(models.Model):
@@ -49,6 +46,7 @@ class Style(models.Model):
 	
     def __unicode__(self):
         return self.highlight
+
 
 class StyleForm(ModelForm):
 	
