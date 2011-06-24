@@ -1,7 +1,7 @@
 PyPastey
 
-This code was developed by Caleb Smith under the GPL. Feel free to use and
 License:
+This code was developed by Caleb Smith under the GPL. Feel free to use and
 modify as desired but please maintain credit to the author.
 
 About:
@@ -9,7 +9,10 @@ A pastebin implemented with Python, Django, and the Pygments library.
 
 Use:
 To run, untar the file, enter the directory and run the Django development 
-server. This can be accomplished as follows from a terminal:
+server. Be sure to change the DATABASES dictionary 'NAME' key in 
+settings.py to reflect an absolute path on your machine. To untar and run 
+server from a terminal:
+
 tar -xf paste.tar.gz
 cd paste
 ./manage.py runserver
