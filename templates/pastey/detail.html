@@ -2,6 +2,7 @@
     <link rel="stylesheet" type="text/css" href="{{STATIC_URL}}/css/main.css" />
 </head>
 <body>
+    <a name="top"></a>
     <div id="masthead">
         <div id="pastey_logo">
                 <span class="site_link"><a href="/pastey/"><h1>PyPasteys</h1></a></span>
@@ -12,13 +13,13 @@
     </div>
 
 
-<div id= "body_wrapper">
+    <div id= "body_wrapper">
     
     {% if last_paste == paste.id %}   
         <div class="center_text">            
-            <form action="#" method="POST">{% csrf_token %}	            
+            <form name="styler" action="#" method="POST">{% csrf_token %}	            
                 <span class="site_link">
-                    <p>This is your most recent paste. Click <input type="submit" name="paste" value="Delete" /> to delete this paste</p>
+                    <p>This is your most recent paste. Click <input type="submit" name="delete" value="Delete" /> to delete this paste</p>
                 </span>
             </form>        
         </div>        
@@ -28,54 +29,66 @@
 
 
         <!--Title-->
-    <div id="title_and_styler">
-        <span id="paste_title"><h2>{{paste.title|title}}</h2></span>
-        
-        <!--Style chooser drop down menu and submit button-->
-        <div id="styler">
-            <form action="#" method="POST">{% csrf_token %}
-	                <table>
-		                <tr>
-			                    <td>{{style_chooser.label}}</td>
-			                    <td>{{style_chooser.as_p}}</td>
-			                    <td><input type="submit" name="Change" value="Change Style" /></td>
-		                </tr>
-	                </table>	
-            </form>
-        </div>	 
-    </div>   
-    
-    <div id="paste_info">    
-        <!--Author-->
-        <p>
-            Submitted by 
-            {% if paste.author != 'an unknown author' %}
-                {{paste.author|title}}
-            {% else %}
-                {{paste.author}}
-            {% endif %} 
+        <div id="title_and_styler">
+            <span id="paste_title"><h2>{{paste.title|title}}</h2></span>
             
-        <!--Email-->
-            {% if paste.email %} at 
-                {{paste.email}}
-            {% endif %} 
-            on {{paste.pub_date}}       
+            <!--Style chooser drop down menu and submit button-->
+            <div id="styler">
+                <form action="#" method="POST">{% csrf_token %}
+	                    <table>
+		                    <tr>
+			                        <td>{{style_chooser.label}}</td>
+			                        <td>{{style_chooser.as_p}}</td>
+			                        <td><input type="submit" name="style_change" value="Change Style" /></td>
+		                    </tr>
+	                    </table>	
+                </form>
+            </div>	 
+        </div>   
+    
+        <div id="paste_info">    
+            <!--Author-->
+            <p>
+                Submitted by 
+                {% if paste.author != 'an unknown author' %}
+                    {{paste.author|title}}
+                {% else %}
+                    {{paste.author}}
+                {% endif %} 
+                
+            <!--Email-->
+                {% if paste.email %} at 
+                    {{paste.email}}
+                {% endif %} 
+                on {{paste.pub_date}}       
+            
+            <!--Language-->    
+                Written in
+                {% if paste.get_language_display %}
+                    {{paste.get_language_display}}
+                {% else %} 
+                    an unspecified programming language
+                {% endif %} 
+           </p>    
+        </div>
         
-        <!--Language-->    
-            Written in
-            {% if paste.get_language_display %}
-                {{paste.get_language_display}}
-            {% else %} 
-                an unspecified programming language
-            {% endif %} 
-       </p>    
+
+        <!--Code paste tabs        -->
+        <div id="detail_tabs">
+            <span id="plain_tab"><a href="/pastey/plain/{{paste.id}}/">Plain</a></span>
+            <span id="copy_tab"><a href="/pastey/copy/{{paste.id}}/{{current_style}}/">Copy</a></span>
+            <span id="html_tab"><a href="/pastey/html/{{paste.id}}/{{current_style}}">HTML</a></span>
+            <span id="edit_tab"><a href="/pastey/{{paste.id}}">Edit</a></span>
+        </div>
+        
+        <!--Formatted text-->
+         <style>{{css_style}}</style>
+        {{code|safe}}
+    
+        <div class="center_text">
+            <br />
+            <span class="site_link"><a href="#top"> Back to top </a></span>    
+        </div>
     </div>
-    
-     
-   
-    
-    <!--Formatted text-->
-     <style>{{css_style}}</style>
-    {{code|safe}}
-</div>
+</body>
 

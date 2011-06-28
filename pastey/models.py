@@ -14,14 +14,14 @@ class Code(models.Model):
     author = models.CharField(max_length = 50, blank=True,null=True)
     email = models.EmailField(max_length = 50, blank=True,null=True)
 
-    private = models.BooleanField(default=False)
+    private = models.BooleanField()
     pub_date = models.DateTimeField()
 
     def __unicode__(self):
         return self.title
 
     def get_absolute_url(self):
-        return '/pastey/%i' % self.id
+        return '/pastey/detail/%i' % self.id
 	
 			
 class CodeForm(ModelForm):
