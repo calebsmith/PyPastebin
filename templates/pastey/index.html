@@ -2,59 +2,38 @@
     <link rel="stylesheet" type="text/css" href="{{STATIC_URL}}/css/main.css" />
 </head>
 <body>
-<h1>PyPasteys</h1>
-<!--Provide the form to create a paste-->
-<form action="#" method="POST">{% csrf_token %}	
-	<table>
-		{{form.as_table}}			
-	</table>	
-	<input type="submit" name="paste" value="Paste" />
-</form>
 
-<!--Show recent code pastes (that are not flagged as private)-->
-{% if pastes|length > 0 %}
+    <div id="masthead">
+        <div id="pastey_logo"> 
+            <h1>PyPasteys</h1>
+        </div>
+        {% if last_paste != '/pastey' %}
+            <div id="most_recent">
+                <span class="site_link"><br /><a href="/pastey/{{last_paste}}">Your most recent paste</a> <span>
+            </div>
+        {% endif %}
+    </div>
 
-    <!--Heading-->
-    <p>Recent code pastes:
-        <input type="button" value="View All Pastes" onClick="window.location='/pastey/list.html'">
-    </p>
-    
-    {% for paste, css_style in pastes %}    
+    <!--Provide the form to create a paste-->
+    <div id="body_wrapper">       
+        <form action="#" method="POST">{% csrf_token %}	
+            <table>
+	            {{form.as_table}}			
+            </table>
+            <span class="button_class"><input type="submit" name="paste" value="Paste" /></span>
+        </form>
 
-        <!--Number of the entry-->
-		<p>{{forloop.counter}}. <a href="{{paste.get_absolute_url}}" target="_blank">{{paste.title|title}}
+        {% if pastes|length > 0 %} 
+            <div class="center_text">
+                <span class="site_link">                    
+                    <a href="/pastey/list/1/"> View recent code pastes </a>
+                    <br />
+                </span>
+            </div>
+        {% endif %}
         
-        <!--Author-->
-		by 
-		{% if paste.author != 'an unknown author' %}
-		    {{paste.author|title}}
-	    {% else %}
-	        {{paste.author}}
-        {% endif %}
-		
-		<!--Language-->
-		written in 
-		{% if paste.language %}
-		    {{paste.get_language_display|title}}
-	    {% else %}
-	        an unspecified programming language
-        {% endif %}
-		
-        <!--Date/Time-->
-        on {{paste.pub_date}}
-		</p></a>
-		
-        <!--Code snippet-->
-        <style>{{css_style}}</style>
-        {{paste.code_paste|safe}}
-					
-    {% endfor %}
-    </ul>
-    
-{% else %}
+       
+        
+    </div>
+</body>        
 
-<!--Message if no pastes are available-->
-    <p>No code pastes are available.</p>
-
-{% endif %}
-</body>
