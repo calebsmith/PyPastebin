@@ -14,7 +14,7 @@ class Code(models.Model):
     author = models.CharField(max_length = 50, blank=True,null=True)
     email = models.EmailField(max_length = 50, blank=True,null=True)
 
-    private = models.BooleanField(default=False)
+    private = models.BooleanField()
     pub_date = models.DateTimeField()
 
     def __unicode__(self):

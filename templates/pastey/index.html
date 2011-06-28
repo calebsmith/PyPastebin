@@ -20,9 +20,9 @@
             <table>
 	            {{form.as_table}}			
             </table>
-            <span class="button_class"><input type="submit" name="paste" value="Paste" /></span>
+            <div class="button_class"><input type="submit" name="paste" value="Paste" /></div>
         </form>
-
+                
         {% if pastes|length > 0 %} 
             <div class="center_text">
                 <span class="site_link">                    
@@ -31,8 +31,6 @@
                 </span>
             </div>
         {% endif %}
-        
-       
         
     </div>
 </body>        

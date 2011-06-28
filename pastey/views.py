@@ -22,13 +22,27 @@ def detail(request, code_id):
     """
     paste = get_object_or_404(Code, pk = code_id)	
     style_choice = Style()		#To hold the user's chosen highlight style 
-    style_menu = StyleForm()	#To display the menu for the user to choose from
+    style_menu = StyleForm()	#To display the style menu for the user to choose from
     
-    #handle form request for user changing the highlighting style
+    #handle form requests 
     if request.method == 'POST':
-        form = StyleForm(request.POST)
-        if form.is_valid():
-            style_choice.highlight = form.cleaned_data['highlight']	    
+    
+        #request to change style on detail page
+        if request.POST.get("style_change", None):
+            form = StyleForm(request.POST)
+            if form.is_valid():
+                style_choice.highlight = form.cleaned_data['highlight']	    
+                
+        #request to delete the most recent paste
+        if request.POST.get("delete", None):
+            this_paste = Code.objects.get(pk = code_id)            
+            this_paste.delete()
+            
+            request.session['member_id'] = 0
+            request.session.set_test_cookie()
+            return redirect('pastey.views.index')          
+    
+                
 
     pretty_code, css_style = pretty_print(paste, style_choice)
     
@@ -42,9 +56,10 @@ def detail(request, code_id):
         last_paste_link = "/pastey"   
 
     #test if a cookie works. If so, another page will link to the user's last paste
-    request.session.set_test_cookie()
+    request.session.set_test_cookie()    
     
-
+    
+        
     
     return render_to_response('pastey/detail.html',{
         'paste': paste, 
@@ -92,17 +107,7 @@ def list_page(request, code_id):
 	
 def index(request): 
     """Provide the pastebin submission form as well as links detail and list views
-    """
-    #obtain the 5 most recent pastes
-    show_entries = 3
-    pastes = list(Code.objects.exclude(private = True).order_by('-pub_date'))[:show_entries]
-
-    #limit each code paste to 400
-    char_limit = 400
-    text_output = tersify(pastes, char_limit)       
-
-    #highlight text 
-    pastes = pretty_pastes(text_output)    
+    """   
     
     #If cookies don't work, or the form doesn't validate a default value is needed
     last_paste_link = "/pastey" 
@@ -120,19 +125,20 @@ def index(request):
     else: 
         form = CodeForm() 
         if request.session.test_cookie_worked(): 
-            last_paste_link = request.session.get('member_id')
+            last_paste_link = request.session.get('member_id')            
+            request.session.delete_test_cookie()
             if not last_paste_link:
-                last_paste_link = "/pastey"
-            request.session.delete_test_cookie() 	
+                last_paste_link = "/pastey" 	
         else:                
             last_paste_link = "/pastey"   
             
     #test if a cookie works. If so, another page will link to the user's last paste
     request.session.set_test_cookie()
-                 
+    
+    assert True
+    
     return render_to_response('pastey/index.html', {
-        'form': form, 
-        'pastes': pastes, 
+        'form': form,          
         'last_paste': last_paste_link,
         }, context_instance=RequestContext(request))	
 

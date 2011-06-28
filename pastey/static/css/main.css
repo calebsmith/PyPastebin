@@ -1,0 +1,174 @@
+/*cross-site basic formatting*/
+body {
+    margin: auto;
+    width: 760;
+}
+h1, h2, h3 {
+    font-family: georgia, helvetica, serif;
+}
+th, p, a {
+    font-family: arial, times, sans-serif;
+    font-size: 16px;
+}
+hr {
+    width: 90%;
+    background-color: ##FEFE90;
+    color:##FEFE90;
+    height:1px;
+
+}
+/*top banner*/
+    /*wraps the whole banner*/
+#masthead{      
+    display: block;
+    background-color:#FEFE90;
+    margin: 5px 5px 0px 5px;
+    padding: 10px;
+    height: 50px;
+}
+#pastey_logo{
+    display: inline-block;
+    text-align: left;
+    position: relative;
+    top: -10px;
+}
+#most_recent {
+    display: inline;
+    float: right;
+}
+/* body wrapper */
+#body_wrapper{
+    background-color:#FFFF80;
+    padding: 15px 3px;
+    margin: 0px 5px 5px 5px;
+}
+    /*row labels in new pastey form */
+#body_wrapper th{
+    text-align: right;
+    padding: 5px 3px;
+    font-size: 14px;    
+}
+
+#body_wrapper textarea{
+    min-width: 300px;
+    min-height: 150px;
+    max-width:  660px;
+    max-height: 300px;    
+}
+
+#body_wrapper .button_class {
+    margin: 2px 25px;
+    padding: 3px 5px;
+}
+
+/* Paste title and style chooser */
+    /*wrapper*/
+#title_and_styler{
+    display: block;
+}
+#paste_title{
+    display: inline-block;
+    text-align: center;
+    padding: 0px 15px;
+}
+    /* style chooser in detail view */
+#styler{
+    display: inline-block;
+    float: right;
+    padding: 20px 20px;
+}
+
+/*tabs in detail view*/
+#detail_tabs{
+    display: inline-block;
+    margin: 0px 5px;
+    padding: 3px 5px;
+    float: right;
+}
+#copy_tab a:link, #copy_tab a:visited, 
+#html_tab a:link, #html_tab a:visited, 
+#edit_tab a:link, #edit_tab a:visited{
+    text-align: left;
+    padding: 5px 15px;
+    text-decoration: none;
+    background-color: #D5B154;
+    color: #505050;
+}
+#copy_tab a:hover, #copy_tab a:active, 
+#html_tab a:hover, #html_tab a:active, 
+#edit_tab a:hover, #edit_tab a:active{
+    text-align: left;
+    padding: 5px 15px;
+    text-decoration: none;
+    background-color: #FEFE90;
+    color: #808080;
+}
+
+
+
+/* code pastes in list view */
+
+#paste_list{
+    padding: 10px 5px;
+    margin: 5px 2px;
+}
+#paste_info {
+    text-align: left;
+    display: block;
+    margin: 5px;
+    padding: 10px 10px;
+}
+    /* for next page, previous page, etc.. */
+#pager {
+    text-align: center;
+    display: inline;
+    margin: 5px;
+}
+
+/*style the submitted text with css cross-site (already pretty_printed)*/
+.source {
+    overflow: auto;
+    width: 710px;
+    display: block;
+    padding: 7px 5px;
+    border: 8px solid #FEFE90;
+
+}
+.linenodiv {
+    vertical-align: top;
+}
+.sourcetable {
+    padding: 2px;
+    overflow: auto;
+    width: 710px;
+
+}
+/*Site links on post-it background*/
+.site_link a:link, .site_link a:visited{
+    color:#404010;
+    text-decoration: none;
+}
+.site_link a:hover, .site_link a:active{
+    color:#A0A080;
+    text-decoration: none;
+}
+
+/*links to detail page from list and index pages*/
+.list_header a:link, .list_header a:visited{
+    color:#404010;
+    display: block;
+    text-decoration: none;
+    background-color: #FEFE90;
+    padding: 8px 8px;
+    width: 718px;
+}
+.list_header a:hover, .list_header a:active{
+    color:#A040FF;
+    text-decoration: none;    
+    background-color: #FEFE90;
+}
+/*cross-site formatting*/
+div.center_text{
+    text-align: center;
+}
+
