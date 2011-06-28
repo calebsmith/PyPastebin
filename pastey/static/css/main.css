@@ -85,15 +85,17 @@ hr {
     padding: 3px 5px;
     float: right;
 }
+#plain_tab a:link, #plain_tab a:visited,
 #copy_tab a:link, #copy_tab a:visited, 
 #html_tab a:link, #html_tab a:visited, 
 #edit_tab a:link, #edit_tab a:visited{
     text-align: left;
     padding: 5px 15px;
     text-decoration: none;
-    background-color: #D5B154;
+    background-color: #E5D164;
     color: #505050;
 }
+#plain_tab a:hover, #plain_tab a:active,
 #copy_tab a:hover, #copy_tab a:active, 
 #html_tab a:hover, #html_tab a:active, 
 #edit_tab a:hover, #edit_tab a:active{
@@ -115,8 +117,8 @@ hr {
 #paste_info {
     text-align: left;
     display: block;
-    margin: 5px;
-    padding: 10px 10px;
+    margin: 3px 5px;
+    padding: 3px 10px;
 }
     /* for next page, previous page, etc.. */
 #pager {
@@ -132,16 +134,14 @@ hr {
     display: block;
     padding: 7px 5px;
     border: 8px solid #FEFE90;
-
-}
-.linenodiv {
-    vertical-align: top;
 }
 .sourcetable {
     padding: 2px;
     overflow: auto;
     width: 710px;
-
+}
+.linenodiv{
+    background-color: #000;
 }
 /*Site links on post-it background*/
 .site_link a:link, .site_link a:visited{

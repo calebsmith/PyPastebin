@@ -75,9 +75,10 @@
 
         <!--Code paste tabs        -->
         <div id="detail_tabs">
-            <span id="copy_tab"><a href="#">Copy</a></span>
-            <span id="html_tab"><a href="#">HTML</a></span>
-            <span id="edit_tab"><a href="#">Edit</a></span>
+            <span id="plain_tab"><a href="/pastey/plain/{{paste.id}}/">Plain</a></span>
+            <span id="copy_tab"><a href="/pastey/copy/{{paste.id}}/{{current_style}}/">Copy</a></span>
+            <span id="html_tab"><a href="/pastey/html/{{paste.id}}/{{current_style}}">HTML</a></span>
+            <span id="edit_tab"><a href="/pastey/{{paste.id}}">Edit</a></span>
         </div>
         
         <!--Formatted text-->

@@ -21,7 +21,7 @@ class Code(models.Model):
         return self.title
 
     def get_absolute_url(self):
-        return '/pastey/%i' % self.id
+        return '/pastey/detail/%i' % self.id
 	
 			
 class CodeForm(ModelForm):

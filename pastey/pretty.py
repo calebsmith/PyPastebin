@@ -23,7 +23,7 @@ def tersify(pastes, charlimit=400):
             paste.code_paste += '...'
     return pastes
 
-def pretty_print(paste, style_choice):	
+def pretty_print(paste, style_choice, linenos = "inline", full = False):	
     """Use Pygments library to highlight a TextField       
 
     returns str1, str2
@@ -43,8 +43,10 @@ def pretty_print(paste, style_choice):
     if paste.language:lexer = get_lexer_by_name(paste.language, stripall=True)
     if not paste.language: lexer = guess_lexer(paste.code_paste, stripall=True)		
     if not style_choice.highlight: style_choice.highlight = DEFAULT_STYLE	
-
-    formatter = HtmlFormatter(linenos="inline", cssclass="source", style= style_choice.highlight)
+    
+    
+    
+    formatter = HtmlFormatter(linenos = linenos, full = full, cssclass="source", style= style_choice.highlight)
     result = highlight(paste.code_paste, lexer, formatter)		
     css_style = formatter.get_style_defs()		
 

@@ -9,7 +9,7 @@
         </div>    
         {% if last_paste != '/pastey' %}
             <div id="most_recent">
-                <span class="site_link"><br /><a href="/pastey/{{last_paste}}">Your most recent paste</a> <span>
+                <span class="site_link"><br /><a href="/pastey/detail/{{last_paste}}">Your most recent paste</a> <span>
             </div>
         {% else %}                
             <div id="most_recent">
@@ -52,13 +52,11 @@
                     >>
                 {% endif %}
                 </p>
-            </div>
-             
+            </div>             
 		            
             {% for item_index, css_style, paste in pastes %}    
                 <div class="list_header">
-                    <!--Number of the entry and Title-->
-		            
+                    <!--Number of the entry and Title-->		            
 		            <a href="{{paste.get_absolute_url}}">
 		                {{item_index}}. {{paste.title|title}}
                         
@@ -89,8 +87,7 @@
                 
                 <!--Add some space between this paste and the next-->
 				<br />
-            {% endfor %}
-            
+            {% endfor %}            
             
         {% else %}
 
