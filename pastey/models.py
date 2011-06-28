@@ -9,7 +9,7 @@ from pastey.choices import LANG_CHOICES, STYLE_CHOICES
 
 class Code(models.Model):
     code_paste = models.TextField('Code')
-    language = models.CharField(max_length = 25, choices=(LANG_CHOICES), blank=True,null=True)
+    language = models.CharField(max_length = 25, choices=(LANG_CHOICES), blank=True,null=True, default="python")
     title = models.CharField(max_length = 50, blank=True, null=True)	
     author = models.CharField(max_length = 50, blank=True,null=True)
     email = models.EmailField(max_length = 50, blank=True,null=True)

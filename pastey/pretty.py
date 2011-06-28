@@ -5,7 +5,7 @@ from pygments.styles import get_style_by_name
 
 from pastey.models import Style
 
-DEFAULT_STYLE = 'colorful'
+DEFAULT_STYLE = 'emacs'
 
 def tersify(pastes, charlimit=400):
     """returns a list of Code objects with a truncated code field.
@@ -44,14 +44,14 @@ def pretty_print(paste, style_choice):
     if not paste.language: lexer = guess_lexer(paste.code_paste, stripall=True)		
     if not style_choice.highlight: style_choice.highlight = DEFAULT_STYLE	
 
-    formatter = HtmlFormatter(linenos="table", cssclass="source", style= style_choice.highlight)
+    formatter = HtmlFormatter(linenos="inline", cssclass="source", style= style_choice.highlight)
     result = highlight(paste.code_paste, lexer, formatter)		
     css_style = formatter.get_style_defs()		
-    
+
     return result, css_style
 
 def pretty_pastes(paste_list):
-    """Applies pretty_print to every object in a list
+    """Applies pretty_print and enumerates every object in a list
     
     Use: paste_list = pretty_pastes(paste_list)
     where paste_list contains the Code objects to be listed
@@ -60,12 +60,19 @@ def pretty_pastes(paste_list):
     contains the paste object while the second contains the style text to be 
     used in the template. The style used is the default value DEFAULT_STYLE.
     """
+   
+    item_index = []
+    for i in range(1, len(paste_list) + 1):
+        item_index.append(i)
+    
     style_choice = Style()  
     css_styles = []
-
+    
     for paste in paste_list:
         paste.code_paste, temp_style = pretty_print(paste, style_choice)
         css_styles.append(temp_style)
-
-    return zip(paste_list, css_styles)
+    
+    paste_list = zip(item_index, css_styles, paste_list)
+    
+    return paste_list
 
