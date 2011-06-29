@@ -1,24 +1,15 @@
-<head>
-    <link rel="stylesheet" type="text/css" href="{{STATIC_URL}}/css/main.css" />
-</head>
-<body>
-    <a name ="top"></a>
-    <div id="masthead">
-        <div id="pastey_logo">
-                <span class="site_link"><a href="/pastey/"><h1>PyPasteys</h1></a></span>
-        </div>    
-        {% if last_paste != '/pastey' %}
-            <div id="most_recent">
-                <span class="site_link"><br /><a href="/pastey/detail/{{last_paste}}">Your most recent paste</a> <span>
-            </div>
-        {% else %}                
-            <div id="most_recent">
-                <span class="site_link"><br /><a href="/pastey">Make a new paste</a></span>
-            </div>
-        {% endif %} 
+{% extends "pastey/base.html" %}
 
-    </div>
+{% block title %}PyPasteys - All Pastes{% endblock %}
+{% block style %}
+    {{css_style}}
+{% endblock %}
 
+{% block masthead %}
+    {% include "pastey/masthead.html" %}  
+{% endblock %}
+
+{% block content %}    
     <div id= "body_wrapper">
         <!--Show recent code pastes (that are not flagged as private)-->
         <div id="paste_list">
@@ -100,4 +91,5 @@
             <span class="site_link"><a href="#top"> Back to top </a></span>    
         </div>
     </div>
-</body>
+{% endblock %}
+
