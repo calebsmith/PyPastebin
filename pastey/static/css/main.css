@@ -23,9 +23,9 @@ hr {
     display: block;
     background-color:#FEFFA0;
 /*    //FEFE90*/
-    margin: 5px 5px 0px 5px;
+    margin: 15px 5px 0px 5px;
     padding: 0px 10px;
-    height: 70px;
+    height: 60px;
 }
     /*logo*/
 #pastey_logo p, #pastey_logo a{
@@ -47,7 +47,7 @@ hr {
 #body_wrapper{
     background-color:#FFFF80;
     padding: 10px 4px;
-    margin: 0px 5px 5px 5px;
+    margin: 0px 5px 15px 5px;
 }
     /*row labels in new pastey form */
 #body_wrapper th{
@@ -56,7 +56,7 @@ hr {
     font-size: 14px;    
 }
 #body_wrapper table{
-
+    padding: 2px;
 }
 #body_wrapper textarea{
     min-width: 300px;
@@ -64,12 +64,10 @@ hr {
     max-width:  660px;
     max-height: 300px;    
 }
-
 #body_wrapper .button_class {
     margin: 2px 25px;
     padding: 3px 5px;
 }
-
 /* Paste title and style chooser */
     /*wrapper*/
 #title_and_styler{
@@ -88,7 +86,7 @@ hr {
     left: 0px;    
     display: inline-block;
     float: right;
-    margin: 0px 2px;
+    margin: 0px 3px;
     z-index: 1;
 }
    /* style chooser in detail view */
@@ -98,8 +96,8 @@ hr {
     left: -180px;
     display: inline;
     float: left;
-    padding: 0px 10px;
-    margin: 0px 50px 0px 10px;
+    padding: 0px 5px;
+    margin: 0px 10px 0px 10px;
 }
     /*tabs in detail view */
 #plain_tab a:link, #plain_tab a:visited,
@@ -108,8 +106,8 @@ hr {
 
     display: inline;    
     text-align: center;
-    margin: 0px 3px;
-    padding: 5px 18px;
+    margin: 0px;
+    padding: 5px 20px;
     text-decoration: none;
     background-color: #E5D164;
     color: #505050;
@@ -118,8 +116,11 @@ hr {
 #copy_tab a:hover, #copy_tab a:active, 
 #html_tab a:hover, #html_tab a:active{
     text-align: left;
-    margin: 0px 3px;
-    padding: 5px 18px;
+    position: relative;
+    top: -2px;
+    left: 0px;
+    margin: 0px;
+    padding: 7px 20px 7px 20px;
     text-decoration: none;
     background-color: #FEFEA0;
     color: #808080;
