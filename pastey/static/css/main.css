@@ -1,7 +1,8 @@
 /*cross-site basic formatting*/
-body {
+body{    
+    width: 760px;
     margin: auto;
-    width: 760;
+    background-image:url('../images/wood.jpeg');
 }
 h1, h2, h3 {
     font-family: georgia, helvetica, serif;
@@ -12,34 +13,40 @@ th, p, a {
 }
 hr {
     width: 90%;
-    background-color: ##FEFE90;
-    color:##FEFE90;
+    background-color: #FEFEA0;
+    color:#FEFE90;
     height:1px;
-
 }
 /*top banner*/
-    /*wraps the whole banner*/
-#masthead{      
+  /*wraps the banner */
+#masthead{
     display: block;
-    background-color:#FEFE90;
+    background-color:#FEFFA0;
+/*    //FEFE90*/
     margin: 5px 5px 0px 5px;
-    padding: 10px;
-    height: 50px;
+    padding: 0px 10px;
+    height: 70px;
 }
-#pastey_logo{
-    display: inline-block;
-    text-align: left;
-    position: relative;
-    top: -10px;
+    /*logo*/
+#pastey_logo p, #pastey_logo a{
+    display: inline;
+    float: left;
+    margin: 5px;
+    padding: 5px 5px 0px 5px;
+    font: bold 34px georgia, helvetica, serif;
 }
-#most_recent {
+    /*recent paste link*/
+#most_recent a{
     display: inline;
     float: right;
+    font-family: georgia, helvetica, serif;
+    font-size: 20px;
+    padding: 20px 5px 0px 5px;
 }
 /* body wrapper */
 #body_wrapper{
     background-color:#FFFF80;
-    padding: 15px 3px;
+    padding: 10px 4px;
     margin: 0px 5px 5px 5px;
 }
     /*row labels in new pastey form */
@@ -48,7 +55,9 @@ hr {
     padding: 5px 3px;
     font-size: 14px;    
 }
+#body_wrapper table{
 
+}
 #body_wrapper textarea{
     min-width: 300px;
     min-height: 150px;
@@ -71,45 +80,59 @@ hr {
     text-align: center;
     padding: 0px 15px;
 }
-    /* style chooser in detail view */
-#styler{
+ 
+/*style chooser and tabs in detail view*/
+#detail_options{
+    position: relative;
+    top: 0px;
+    left: 0px;    
     display: inline-block;
     float: right;
-    padding: 20px 20px;
+    margin: 0px 3px;
+    z-index: 1;
 }
-
-/*tabs in detail view*/
-#detail_tabs{
-    display: inline-block;
-    margin: 0px 5px;
-    padding: 3px 5px;
-    float: right;
+   /* style chooser in detail view */
+#styler {
+    position: relative;   
+    top: -18px;
+    left: -180px;
+    display: inline;
+    float: left;
+    padding: 0px 10px;
+    margin: 0px 50px 0px 10px;
 }
+    /*tabs in detail view */
 #plain_tab a:link, #plain_tab a:visited,
 #copy_tab a:link, #copy_tab a:visited, 
-#html_tab a:link, #html_tab a:visited, 
-#edit_tab a:link, #edit_tab a:visited{
-    text-align: left;
-    padding: 5px 15px;
+#html_tab a:link, #html_tab a:visited{
+
+    display: inline;    
+    text-align: center;
+    margin: 0px 3px;
+    padding: 5px 18px;
     text-decoration: none;
     background-color: #E5D164;
     color: #505050;
 }
 #plain_tab a:hover, #plain_tab a:active,
 #copy_tab a:hover, #copy_tab a:active, 
-#html_tab a:hover, #html_tab a:active, 
-#edit_tab a:hover, #edit_tab a:active{
+#html_tab a:hover, #html_tab a:active{
     text-align: left;
-    padding: 5px 15px;
+    margin: 0px 3px;
+    padding: 5px 18px;
     text-decoration: none;
-    background-color: #FEFE90;
+    background-color: #FEFEA0;
     color: #808080;
 }
-
-
+#detail_code{
+    position: relative;
+    top: -37px;
+    left: 0px;
+    z-index: 0;
+    padding: 3px 9px;
+}
 
 /* code pastes in list view */
-
 #paste_list{
     padding: 10px 5px;
     margin: 5px 2px;
@@ -124,7 +147,7 @@ hr {
 #pager {
     text-align: center;
     display: inline;
-    margin: 5px;
+    margin: 0px 5px;
 }
 
 /*style the submitted text with css cross-site (already pretty_printed)*/
@@ -132,13 +155,9 @@ hr {
     overflow: auto;
     width: 710px;
     display: block;
-    padding: 7px 5px;
-    border: 8px solid #FEFE90;
-}
-.sourcetable {
-    padding: 2px;
-    overflow: auto;
-    width: 710px;
+    margin: 0px 0px;
+    padding: 7px 4px;
+    border: 8px solid #FEFEA0;
 }
 .linenodiv{
     background-color: #000;
@@ -158,14 +177,14 @@ hr {
     color:#404010;
     display: block;
     text-decoration: none;
-    background-color: #FEFE90;
+    background-color: #FEFEA0;
     padding: 8px 8px;
     width: 718px;
 }
 .list_header a:hover, .list_header a:active{
-    color:#A040FF;
+    color:#7c5f36;
     text-decoration: none;    
-    background-color: #FEFE90;
+    background-color: #FEFEA0;
 }
 /*cross-site formatting*/
 div.center_text{

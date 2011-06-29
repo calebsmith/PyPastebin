@@ -3,12 +3,11 @@ from pastey import views
 
 urlpatterns = patterns('', 
     (r'^$', views.index), 
-    (r'^(?P<edit>\d+)/$', views.index),
+    (r'^(?P<edit_id>\d+)/$', views.index),
     (r'^list.html$', views.list_page),
     (r'^list/(?P<code_id>\d+)/$', views.list_page),
     (r'^detail/(?P<code_id>\d+)/$', views.detail),
     (r'^plain/(?P<code_id>\d+)/$', views.plain),
-    (r'^copy/(?P<code_id>\d+)/(?P<style_id>\w+)/$', views.copy),
     (r'^html/(?P<code_id>\d+)/(?P<style_id>\w+)/$', views.html),
 
 )

@@ -41,7 +41,7 @@ def list_page(request, code_id):
         'last_paste': last_paste_link,
         }, context_instance=RequestContext(request))
 	
-def index(request, edit = False): 
+def index(request, edit_id = None): 
     """Provide the pastebin submission form as well as links detail and list views
     """   
     
@@ -55,18 +55,18 @@ def index(request, edit = False):
             a = form.save()              
             #store paste in a cookie
             request.session['member_id'] = a.id
-            return redirect(a)      
-	
-	#maintain form data and redirect if not valid (also initial page load)   
-    else: 
-        form = CodeForm() 
-
-
-#NOT YET IMPLEMENTED. Doesn't accept data for editing    
-    if edit:
-        data = Code.objects.get(pk = edit)
-        form.code_paste = data.code_paste
-       
+            return redirect(a)      	
+	  
+    else:
+        #initial page load
+        if not edit_id: 
+            form = CodeForm() 
+        
+        #loading with data from a previous paste
+        if edit_id:
+            data = Code.objects.get(pk = edit_id)
+            form = CodeForm(instance=data)
+   
     last_paste_link = cookie_checker(request)    
     
     return render_to_response('pastey/index.html', {
@@ -151,7 +151,7 @@ def html(request, code_id, style_id):
     pretty_code, css_style = pretty_print(paste, style_choice, "inline", True)
     last_paste_link = cookie_checker(request)    
         
-    return render_to_response('pastey/copy.html',{
+    return render_to_response('pastey/html.html',{
     'paste': paste,
     'code': pretty_code,
     'css_style': css_style,

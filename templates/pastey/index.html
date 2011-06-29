@@ -1,19 +1,12 @@
-<head>
-    <link rel="stylesheet" type="text/css" href="{{STATIC_URL}}/css/main.css" />
-</head>
-<body>
+{% extends "pastey/base.html" %}
 
-    <div id="masthead">
-        <div id="pastey_logo"> 
-            <h1>PyPasteys</h1>
-        </div>
-        {% if last_paste != '/pastey' %}
-            <div id="most_recent">
-                <span class="site_link"><br /><a href="/pastey/detail/{{last_paste}}">Your most recent paste</a> <span>
-            </div>
-        {% endif %}
-    </div>
+{% block title %}PyPasteys - A Python Pastebin{% endblock %}
 
+{% block masthead %}
+    {% include "pastey/masthead.html" with index_page=1 %}  
+{% endblock %}
+
+{% block content %}
     <!--Provide the form to create a paste-->
     <div id="body_wrapper">       
         <form action="#" method="POST">{% csrf_token %}	
@@ -30,8 +23,6 @@
                     <br />
                 </span>
             </div>
-        {% endif %}
-        
+        {% endif %}        
     </div>
-</body>        
-
+{% endblock %}

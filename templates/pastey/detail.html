@@ -1,49 +1,31 @@
-<head>
-    <link rel="stylesheet" type="text/css" href="{{STATIC_URL}}/css/main.css" />
-</head>
-<body>
-    <a name="top"></a>
-    <div id="masthead">
-        <div id="pastey_logo">
-                <span class="site_link"><a href="/pastey/"><h1>PyPasteys</h1></a></span>
-        </div>       
-        <div id="most_recent">
-            <span class="site_link"><br /><a href="/pastey">Make a new paste</a></span>
-        </div>
-    </div>
+{% extends "pastey/base.html" %}
 
+{% block title %}PyPasteys - {{paste.title}}{% endblock %}
+{% block style %}
+    {{css_style}}
+{% endblock %}
+{% block masthead %}
+    {% include "pastey/masthead.html" %}  
+{% endblock %}
 
-    <div id= "body_wrapper">
-    
-    {% if last_paste == paste.id %}   
-        <div class="center_text">            
-            <form name="styler" action="#" method="POST">{% csrf_token %}	            
-                <span class="site_link">
-                    <p>This is your most recent paste. Click <input type="submit" name="delete" value="Delete" /> to delete this paste</p>
-                </span>
-            </form>        
-        </div>        
+{% block content %}
+    <div id="body_wrapper">    
+        {% if last_paste == paste.id %}   
+            <div class="center_text">            
+                <form name="styler" action="#" method="post">{% csrf_token %}	            
+                    <span class="site_link">
+                        <p>This is your most recent paste. Click <input type="submit" name="delete" value="Delete" /> to delete this paste</p>
+                    </span>
+                </form>        
+            </div>       
 
-    {% endif %}
-
+        {% endif %}
 
 
         <!--Title-->
         <div id="title_and_styler">
-            <span id="paste_title"><h2>{{paste.title|title}}</h2></span>
-            
-            <!--Style chooser drop down menu and submit button-->
-            <div id="styler">
-                <form action="#" method="POST">{% csrf_token %}
-	                    <table>
-		                    <tr>
-			                        <td>{{style_chooser.label}}</td>
-			                        <td>{{style_chooser.as_p}}</td>
-			                        <td><input type="submit" name="style_change" value="Change Style" /></td>
-		                    </tr>
-	                    </table>	
-                </form>
-            </div>	 
+            <div id="paste_title"><h2>{{paste.title|title}}</h2></div>
+           
         </div>   
     
         <div id="paste_info">    
@@ -72,23 +54,38 @@
            </p>    
         </div>
         
-
         <!--Code paste tabs        -->
-        <div id="detail_tabs">
+        <div id="detail_options">        
+        
+            <!--Style chooser drop down menu and submit button-->
+            <div id="styler">
+                <form action="#" method="post">{% csrf_token %}
+                        <table>
+	                        <tr>
+	                            <td>{{style_chooser.label}}</td>
+	                            <td>{{style_chooser.as_p}}</td>
+	                            <td>
+	                                <input type="submit" name="style_change" value="Change Style" />
+                                </td>
+	                        </tr>
+                        </table>	
+                </form>
+            </div>	       
+            <!--Alternate detail tabs-->
             <span id="plain_tab"><a href="/pastey/plain/{{paste.id}}/">Plain</a></span>
-            <span id="copy_tab"><a href="/pastey/copy/{{paste.id}}/{{current_style}}/">Copy</a></span>
-            <span id="html_tab"><a href="/pastey/html/{{paste.id}}/{{current_style}}">HTML</a></span>
-            <span id="edit_tab"><a href="/pastey/{{paste.id}}">Edit</a></span>
+            <span id="html_tab"><a href="/pastey/html/{{paste.id}}/{{current_style}}">HTML</a></span>            
+            <span id="copy_tab"><a href="/pastey/{{paste.id}}">Copy</a></span>
         </div>
         
         <!--Formatted text-->
-         <style>{{css_style}}</style>
-        {{code|safe}}
+        <div id="detail_code">            
+            {{code|safe}}
+        </div>
     
         <div class="center_text">
             <br />
             <span class="site_link"><a href="#top"> Back to top </a></span>    
         </div>
     </div>
-</body>
+{% endblock %}
 
