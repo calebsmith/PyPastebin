@@ -62,7 +62,7 @@ hr {
     min-width: 300px;
     min-height: 150px;
     max-width:  660px;
-    max-height: 300px;    
+    max-height: 350px;    
 }
 #body_wrapper .button_class {
     margin: 2px 25px;
@@ -107,7 +107,7 @@ hr {
     display: inline;    
     text-align: center;
     margin: 0px;
-    padding: 5px 20px;
+    padding: 6px 20px;
     text-decoration: none;
     background-color: #E5D164;
     color: #505050;
@@ -120,14 +120,14 @@ hr {
     top: -2px;
     left: 0px;
     margin: 0px;
-    padding: 7px 20px 7px 20px;
+    padding: 6px 20px 8px 20px;
     text-decoration: none;
     background-color: #FEFEA0;
     color: #808080;
 }
 #detail_code{
     position: relative;
-    top: -37px;
+    top: -39px;
     left: 0px;
     z-index: 0;
     padding: 3px 9px;
