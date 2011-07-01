@@ -1,21 +1,25 @@
 {% extends "pastey/base.html" %}
 
-{% block title %}PyPasteys - A Python Pastebin{% endblock %}
+{% block title %}PyPastebin - A Python Pastebin{% endblock %}
 
 {% block masthead %}
     {% include "pastey/masthead.html" with index_page=1 %}  
 {% endblock %}
 
 {% block content %}
-    <!--Provide the form to create a paste-->
-    <div id="body_wrapper">       
-        <form action="#" method="POST">{% csrf_token %}	
-            <table>
-	            {{form.as_table}}			
-            </table>
-            <div class="button_class"><input type="submit" name="paste" value="Paste" /></div>
+    
+    <div id="body_wrapper"> 
+        <!--Provide error message feedback if user clicks paste with no information or file chosen      -->
+        {% if err_msg %}
+            <div class="center_text"><p>You must enter some text or select a file to upload</p></div>
+        {% endif %}
+        
+        <!--Provide the form to create a paste-->
+        <form  enctype="multipart/form-data" action="#" method="POST">{% csrf_token %}	           
+            {% include "pastey/newform.html" %}
         </form>
-                
+        
+        <!--Provide a link to the list_page view        -->
         {% if pastes|length > 0 %}         
             <div class="center_text">
                 <span class="site_link">                    
