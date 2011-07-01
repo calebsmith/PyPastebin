@@ -6,21 +6,30 @@ from django.shortcuts import render_to_response, get_object_or_404, redirect
 from django.core.context_processors import csrf
 from django.core.urlresolvers import reverse
 from django.core.paginator import Paginator
-
 from django.contrib.sessions.backends.db import SessionStore
-
 from django import forms
 
 from pastey.models import *
 from pastey.pretty import * 
 from pastey.choices import *
 
-
 def list_page(request, code_id):
     """List all public pastebin submissions
     """
     entries_per_page = 5
     char_limit = 1200
+    
+    
+    #Int the future the delete functionality needs to be done with cronjobs or 
+    # celery, not in the list view!
+    
+    #delete old entries
+    paste_list = Code.objects.all()
+    for paste in paste_list:
+        if datetime.datetime.now() > paste.del_date:
+            paste.txt_file.delete()
+            paste.delete()
+
     
     #use the pretty module (which uses Pygments) to format text. Return text with HTML tags and CSS
     paste_list = list(Code.objects.exclude(private = True).order_by('-pub_date'))
@@ -48,14 +57,33 @@ def index(request, edit_id = None):
     #If cookies don't work, or the form doesn't validate a default value is needed
     last_paste_link = "/pastey" 
     
+    #by default there is no error message
+    err_msg = False
+    
     #form handling for making a new paste
     if request.method == 'POST':         
-        form = CodeForm(request.POST)        
-        if form.is_valid():            
+        form = CodeForm(request.POST, request.FILES) 
+
+        
+        #optimize this section by learning how to obtain the data directly
+        #tease out the code_paste data
+        fields = dict([(k, v) for k, v in request.POST.items()]) 
+        code_paste = fields.get('code_paste')
+       
+       
+        #check form validation, and the user must type the code or upload a file   
+        if form.is_valid() and (request.FILES or code_paste):    
+            #save to db and save the uploaded file or create own
             a = form.save()              
             #store paste in a cookie
             request.session['member_id'] = a.id
-            return redirect(a)      	
+            
+            return redirect(a)
+        
+        #if form is submitted without code or an upload
+        else:
+      	    form = CodeForm()
+      	    err_msg = True
 	  
     else:
         #initial page load
@@ -72,6 +100,8 @@ def index(request, edit_id = None):
     return render_to_response('pastey/index.html', {
         'form': form,          
         'last_paste': last_paste_link,
+        'err_msg': err_msg,
+        'editing': edit_id,
         }, context_instance=RequestContext(request))	
 
 
@@ -97,6 +127,7 @@ def detail(request, code_id):
         #request to delete the most recent paste
         if request.POST.get("delete", None):
             this_paste = Code.objects.get(pk = code_id)            
+            this_paste.txt_file.delete()
             this_paste.delete()
             
             request.session['member_id'] = 0
@@ -128,21 +159,6 @@ def plain(request, code_id):
     'paste': paste,
     },context_instance=RequestContext(request))
 
-def copy(request, code_id, style_id):
-    paste = get_object_or_404(Code, pk = code_id)	
-    style_choice = Style()		#To hold the user's chosen highlight style
-         
-    style_choice.highlight = style_id
-    pretty_code, css_style = pretty_print(paste, style_choice, False)
-    last_paste_link = cookie_checker(request)    
-        
-    return render_to_response('pastey/copy.html',{
-    'paste': paste,
-    'code': pretty_code,
-    'css_style': css_style,
-    },context_instance=RequestContext(request))
-
-
 def html(request, code_id, style_id):
     paste = get_object_or_404(Code, pk = code_id)	
     style_choice = Style()		#To hold the user's chosen highlight style     
@@ -157,7 +173,19 @@ def html(request, code_id, style_id):
     'css_style': css_style,
     },context_instance=RequestContext(request))
 
-
+def copy(request, code_id, style_id):
+    paste = get_object_or_404(Code, pk = code_id)	
+    style_choice = Style()		#To hold the user's chosen highlight style
+         
+    style_choice.highlight = style_id
+    pretty_code, css_style = pretty_print(paste, style_choice, False)
+    last_paste_link = cookie_checker(request)    
+        
+    return render_to_response('pastey/copy.html',{
+    'paste': paste,
+    'code': pretty_code,
+    'css_style': css_style,
+    },context_instance=RequestContext(request))
 
 #not a view!
 def cookie_checker(request):
@@ -165,12 +193,12 @@ def cookie_checker(request):
     if request.session.test_cookie_worked(): 
             last_paste_link = request.session.get('member_id')
             if not last_paste_link:
-                last_paste_link = "/pastey"
+                last_paste_link = None
             request.session.delete_test_cookie() 	
     else:                
-        last_paste_link = "/pastey"   
+        last_paste_link = None   
 
-    #test if a cookie works. If so, another page will link to the user's last paste
+    #test if a cookie works. If so, the next page will link to the user's last paste
     request.session.set_test_cookie()    
     return last_paste_link
 

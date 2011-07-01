@@ -2,13 +2,13 @@
     <a name ="top"></a>
     <div id="pastey_logo">
         {% if index_page == 1 %}
-            <p>PyPasteys</p>
+            <p>PyPastebin</p>
         {% else %}
-            <span class="site_link"><a href="/pastey/">PyPasteys</a></span>
+            <span class="site_link"><a href="/pastey/">PyPastebin</a></span>
         {% endif %}        
     </div>
         
-    {% if last_paste != '/pastey' and last_paste != paste.id %}
+    {% if last_paste != None and last_paste != paste.id %}
         <div id="most_recent">
             <span class="site_link"><a href="/pastey/detail/{{last_paste}}">Your most recent paste</a><span>
         </div>

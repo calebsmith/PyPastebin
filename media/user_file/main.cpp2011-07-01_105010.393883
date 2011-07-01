@@ -1,0 +1,36 @@
+#include <iostream>
+#include <string>
+#include "classes.h"
+
+#include "variables.h"
+#include "functions.h"
+using namespace std;
+
+int main (int argc, char* argv[])
+{
+	cout << "Welcome to Study Awesome 1.0" << '\n' << '\n';
+	if (argc > 1){
+		a.file(argv[1]); 
+		a.load();
+		quiz(a);
+		cin >> menu;
+		return 0;
+	}
+	while (menu != "exit" && menu != "q" && menu != "quit")
+	{
+		cout << "Main menu" << '\n';
+		cin >> menu;
+		if (menu == "load") { 
+			cout << "Enter filename:";
+			cin >> arg; 
+			a.file(arg);cout << '\n'; 
+			a.load();
+			
+		}
+		if (menu == "info") a.info();
+		if (menu == "list") a.list();
+		if (menu == "test" || menu == "quiz") quiz(a);
+	}
+	return 0;
+}
+

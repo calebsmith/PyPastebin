@@ -1,9 +1,10 @@
 from pygments import highlight
-from pygments.lexers import PythonLexer,  get_lexer_by_name, guess_lexer, get_all_lexers
+from pygments.lexers import PythonLexer,  get_lexer_by_name, get_lexer_for_filename, guess_lexer, get_all_lexers
 from pygments.formatters import HtmlFormatter
 from pygments.styles import get_style_by_name
 
 from pastey.models import Style
+
 
 DEFAULT_STYLE = 'emacs'
 

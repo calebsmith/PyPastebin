@@ -1,0 +1,1948 @@
+REM $DYNAMIC
+COMMON SHARED montype()
+COMMON SHARED thrumons(), monmovf(), monmov(), monmoved()
+COMMON SHARED monmovdir(), wildmon()
+COMMON SHARED pathtemp(), pathtemp2%(), pathtemp3(), pathtemp4()
+COMMON SHARED pathtemp5(), pathtemp6(), pathtemp7(), pathtemp8()
+COMMON SHARED char1%(), char2%()
+COMMON SHARED gang(), wild()
+DECLARE SUB generatewild (numwildmax!, numwild!, thruwild!(), wildmovf!(), wildtype!(), wildalive!())
+DECLARE SUB gotasword (chestnum!)
+DECLARE SUB greethandler (dalive!, talked2!, person!, returned!, expr!, talked3!, whichman!, gp!, reward!, weapon$, knife!, sword1!, wepequip!)
+DECLARE SUB helppage ()
+DECLARE SUB mapname (start$, map$)
+DECLARE SUB menu (menuselect!)
+DECLARE SUB startup (selection!, new!)
+DECLARE SUB statuschange (expr!, lev!, oldlev!, hp!, mhp!, mp!, mmp!, hpchange!, levchange!, gp!, gpchange!, mv!, mmv!, thac0!, oldgp!, mpchange!)
+DECLARE SUB weaponchoice (weapon$, attd!, atpl!, tow$, weapondesc$, lev)
+DECLARE SUB weaponequip (wepequip!, sword1!, sword2!, sword3!, staff1!, dagger1!, sword4!)
+DECLARE SUB gangmove (nummons, xmon(), ymon(), monalive(), thrumons(), firsttimeput, monmov(), monmovf(), monmoved(), t(), gang(), pathtemp4(), pathtemp5(), pathtemp6(), pathtemp7(), pathtemp8(), monmovdir(), xyes, yyes)
+DECLARE SUB spellbit (magicmissle, curelight, createwater, armor, spellbitv, oldspellbitv)
+xp = 10
+yp = 10
+points = 100
+CLEAR , , 10000
+RANDOMIZE TIMER
+'ON ERROR GOTO 999
+sleeptime = 1500000
+nummons = 5
+REDIM peltcount(25)
+REDIM monalive(nummons), montype(nummons)
+OPEN "tempsave.dat" FOR INPUT AS #1
+        INPUT #1, battletime
+        IF battletime = 1 THEN
+                INPUT #1, start$, initialload, monster, hp, mhp, mp, mmp
+                INPUT #1, thac0, ac, spellbitv
+                INPUT #1, healpot, sleeppot, refreshpot, expr, dalive, attd
+                INPUT #1, atpl, salive, flee, knife, armoron
+                INPUT #1, xpl, ypl, xpl3, ypl3, weapon$, wepequip
+                INPUT #1, coldprot, rope, watown, scalpcount, recallscroll
+                INPUT #1, books, talked2, talked3, returned, reward
+                INPUT #1, gp, maploaded, selftalked1, greeter, person, tow$, curtil
+                        FOR d = 1 TO 11: INPUT #1, peltcount(d): NEXT
+                INPUT #1, lev
+                        FOR d = 1 TO 5: INPUT #1, monalive(d): NEXT
+                INPUT #1, aqua
+        END IF
+CLOSE
+ 
+ movf = 175
+90                      'line to goto to restart everything but declare sub and memory preparation
+selection = 1
+IF battletime = 0 AND maploaded = 0 THEN
+OPEN "temp3.dat" FOR INPUT AS #1
+        INPUT #1, selection
+CLOSE
+IF selection = 0 THEN CHAIN "start.exe"
+OPEN "temp3.dat" FOR OUTPUT AS #1
+        PRINT #1, 0
+CLOSE
+
+END IF
+
+
+c3 = 55
+nummons = 5   'number of gang thugs  in forest 2, including boss
+numwildmax = 6
+numwild = INT(RND * numwildmax) + 2'number of wild animals in forest3 and further
+
+'starting locations and stats
+backthrough2 = 0: backthrough = 0: tileset = 1
+
+'set up default variables not loaded from start.exe
+IF initialload = 0 THEN
+        xpl4 = 8: ypl4 = 7
+        dchange = 1: change = 1:  change2 = 1
+END IF
+xpl2 = 15: ypl2 = 9
+
+xp = 10
+yp = 10
+points = 100
+
+'dimension various arrays
+REDIM cdi(points), c2(points), c3(points)
+REDIM cdi12(points)
+
+REDIM xmon(nummons), ymon(nummons)
+
+REDIM thrumons(nummons), monmovf(nummons)
+REDIM monmov(nummons), monmoved(nummons)
+REDIM monmovdir(nummons + 1)
+REDIM wildmon(nummons + 1)
+FOR t = 1 TO nummons
+        monmovf(t) = INT(RND * 1010) + 700'set the rate at which they wander
+        montype(t) = 3  'make all of them gang peons
+        'monalive(t) = 1           'make them all alive(as opposed to dead)
+        IF t = 1 THEN montype(t) = 4         'make first one the boss
+NEXT
+REDIM xwild(numwildmax), ywild(numwildmax), wildalive(numwildmax)
+REDIM wildtype(numwildmax), thruwild(numwildmax), wildmovf(numwildmax)
+REDIM wildmov(numwildmax), wildmoved(numwildmax), wildmovdir(numwildmax)
+REDIM visible(numwildmax)
+
+
+'character tiles
+
+REDIM pathtemp(points), pathtemp2%(points), pathtemp3(points)
+REDIM pathtemp4(points), pathtemp5(points), pathtemp6(points), pathtemp7(points), pathtemp8(points)
+REDIM char1%(points), char2%(points)
+REDIM gang(points), wild(points)
+
+helpscramount = 20000
+
+OPEN "char1.dat" FOR INPUT AS #1
+d = 0
+FOR d = 1 TO points
+INPUT #1, cdi(d)
+NEXT
+CLOSE
+
+OPEN "char2.dat" FOR INPUT AS #1
+d = 0
+FOR d = 1 TO points
+INPUT #1, c2(d)
+NEXT
+CLOSE
+OPEN "char3.dat" FOR INPUT AS #1
+d = 0
+FOR d = 1 TO points
+INPUT #1, c3(d)
+NEXT
+CLOSE
+OPEN "char4.dat" FOR INPUT AS #1
+d = 0
+FOR d = 1 TO points
+INPUT #1, gang(d)
+NEXT
+CLOSE
+OPEN "char5.dat" FOR INPUT AS #1
+d = 0
+FOR d = 1 TO points
+INPUT #1, wild(d)
+NEXT
+CLOSE
+
+OPEN "char12.dat" FOR INPUT AS #1
+d = 0
+FOR d = 1 TO points
+INPUT #1, cdi12(d)
+NEXT
+CLOSE
+
+1000
+curtile = 1: equip = 0: chainm = 0: save = 0
+load = 0: fight = 0: chaing = 0: enter = 0
+
+IF selection = 2 THEN  'load selected at startup
+    load = 1
+    maploaded = 0
+END IF
+nospacebegin = 1
+menudone = 1
+
+IF battletime = 1 THEN didchange = 1
+battletime = 0
+OPEN "tempsave.dat" FOR OUTPUT AS #1
+PRINT #1, battletime
+PRINT #1, start$
+PRINT #1, initialload
+CLOSE
+
+
+'place to return to from loop if mapchange or box needs erased
+1001
+
+
+nospace = 1
+firsttimeput = 1: hpchange = 1: mpchange = 1: charmov = 1: firstcharmov = 1
+levchange = 1: gpchange = 1
+
+
+IF maploaded = 0 THEN
+battletime = 1
+maploaded = 1
+
+OPEN "tmpsave2.dat" FOR OUTPUT AS #1
+PRINT #1, battletime
+PRINT #1, start$
+PRINT #1, initialload
+PRINT #1, monster
+PRINT #1, hp
+PRINT #1, mhp
+PRINT #1, mp
+PRINT #1, mmp
+PRINT #1, thac0
+PRINT #1, ac
+PRINT #1, spellbitv
+PRINT #1, healpot
+PRINT #1, sleeppot
+PRINT #1, refreshpot
+PRINT #1, expr
+PRINT #1, dalive
+PRINT #1, attd
+PRINT #1, atpl
+PRINT #1, salive
+PRINT #1, flee
+PRINT #1, knife
+PRINT #1, armoron
+PRINT #1, xpl
+PRINT #1, ypl
+PRINT #1, xpl3
+PRINT #1, ypl3
+PRINT #1, weapon$
+PRINT #1, wepequip
+PRINT #1, coldprot
+PRINT #1, rope
+PRINT #1, watown
+PRINT #1, scalpcount
+PRINT #1, recallscroll
+PRINT #1, books
+PRINT #1, talked2
+PRINT #1, talked3
+PRINT #1, returned
+PRINT #1, reward
+PRINT #1, gp
+PRINT #1, maploaded
+PRINT #1, selftalked1
+PRINT #1, greeter
+PRINT #1, person
+PRINT #1, tow$
+PRINT #1, curtile
+                FOR d = 1 TO 11
+                        PRINT #1, peltcount(d)
+                NEXT
+PRINT #1, lev
+FOR d = 1 TO 5
+        PRINT #1, monalive(d)
+NEXT
+PRINT #1, aqua
+CLOSE
+
+                 IF equip = 1 THEN CHAIN "equip.exe"
+                 IF chainm = 1 THEN CHAIN "magic.exe"
+                IF fight = 1 THEN CHAIN "rpgbat.exe"
+                IF enter = 1 THEN CHAIN "ENTER.exe"
+                
+                 IF save = 1 OR load = 1 OR chaing = 1 THEN
+                        DEF SEG = &HA000
+                        BSAVE "gmeback2.dis", 0, 62000
+                 END IF
+                 IF save = 1 THEN CHAIN "save.exe"
+                 IF load = 1 THEN CHAIN "load.exe"
+                IF chaing = 1 THEN CHAIN "greet2.exe"
+CHAIN "rpgtile2.exe"
+END IF
+
+IF solidunk = 0 THEN
+        solidunk = 1
+        d = 0
+'find out how many solid tiles there are
+
+        soltiles = 0
+        OPEN "solids.dat" FOR INPUT AS #1
+                DO
+                        INPUT #1, crap
+                        soltiles = soltiles + 1
+                LOOP UNTIL (EOF(1))
+        CLOSE
+
+        REDIM solidtile(soltiles)  'allocate memory for number of solidtiles
+
+'load the number names of solid tiles into array
+        
+        OPEN "solids.dat" FOR INPUT AS #1
+                FOR d = 1 TO soltiles
+                        INPUT #1, solidtile(d)
+                NEXT
+        CLOSE
+END IF
+
+d = 0
+map$ = start$ + ".dat"
+IF start$ = "Home" THEN map$ = "home1.dat"
+IF start$ = "Island" THEN
+        change2 = 1
+        xpl4 = 8
+        ypl4 = 7
+END IF
+IF start$ = "Town1" THEN change = 1
+IF start$ = "Town2" THEN dchange = 1
+
+IF LEFT$(start$, 6) = "Forest" THEN
+        numwild = 0
+        IF VAL(RIGHT$(start$, 2)) > 14 THEN numwild = 1
+        CALL generatewild(numwildmax, numwild, thruwild(), wildmovf(), wildtype(), wildalive())
+END IF
+
+OPEN map$ FOR INPUT AS #1
+INPUT #1, mx
+INPUT #1, my
+1
+
+IF through = 0 THEN
+        REDIM t(mx * my + 29)
+        REDIM tsolid(mx * my + 27)
+END IF
+        through = 1
+        d = 0
+        DO
+                d = d + 1
+                INPUT #1, t(d)
+                IF t(d) = 14 AND start$ = "House3" AND reward = 0 THEN t(d) = 1
+        LOOP UNTIL (EOF(1))
+
+CLOSE
+'reset solids by removing all values from tsolid array
+ FOR d = 1 TO 25 * 17 + 27
+        tsolid(d) = 0
+ NEXT
+d = 25
+
+FOR y = 1 TO 15
+FOR x = 1 TO 25
+d = d + 1
+        FOR solt = 1 TO soltiles
+                IF solidtile(solt) = t(d) THEN tsolid(d) = 1
+                IF t(d) = 7 AND t(d + 25) <> 4 AND t(d - 25) <> 4 AND tileset = 1 THEN tsolid(d) = 1
+                IF tsolid(d) = 1 THEN EXIT FOR
+        NEXT
+NEXT
+NEXT
+
+change = 1
+
+900
+
+IF flee = 1 THEN
+flee = 0
+
+    IF monster = 1 THEN
+    DO 'loop until his location is not on a tree or wall or something.
+    IF xpl3 = xpl AND t((xpl3 + ypl3 * 25) + 1) = 1 OR xpl3 = xpl AND t((xpl3 + ypl3 * 25) + 1) = 4 THEN xpl3 = xpl3 + 1
+    IF xpl3 = xpl AND t((xpl3 + ypl3 * 25) - 1) = 1 OR xpl3 = xpl AND t((xpl3 + ypl3 * 25) - 1) = 4 THEN xpl3 = xpl3 - 1
+    IF ypl3 = ypl AND t((xpl3 + ypl3 * 25) + 25) = 1 OR ypl3 = ypl AND t((xpl3 + ypl3 * 25) + 25) = 4 THEN ypl3 = ypl3 + 1
+    IF ypl3 = ypl AND t((xpl3 + ypl3 * 25) - 25) = 1 OR ypl3 = ypl AND t((xpl3 + ypl3 * 25) - 25) = 4 THEN ypl3 = ypl3 - 1
+    LOOP UNTIL xpl3 <> xpl AND t(xpl3 + ypl3 * 25) = 1 OR ypl3 <> ypl AND t(xpl3 + ypl3 * 25) = 1 OR xpl3 <> xpl AND t(xpl3 + ypl3 * 25) = 4 OR ypl3 <> ypl AND t(xpl3 + ypl3 * 25) = 4
+    END IF
+END IF
+
+'load weapons and spells
+CALL weaponchoice(weapon$, attd, atpl, tow$, weapondesc$, lev)  ' which weapon is being used. generate stats accordingly
+CALL weaponequip(wepequip, sword1, sword2, sword3, staff1, dagger1, sword4)'what weapons do I own?
+CALL spellbit(magicmissle, curelight, createwater, armor, spellbitv, oldspellbitv)
+        
+        SCREEN 13
+        DEF SEG = &HA000
+BLOAD "gameback.dis", 0
+'LOCATE 1, 1
+'PRINT start$
+
+DO
+'------------------------------------------------------------------
+'                             Program loop
+'---------------------------------------------------------------------
+'LOCATE 2, 5
+    'PRINT "String Space", FRE(1)
+   ' PRINT "Unused Stack Space", FRE(-2)
+    'PRINT "Array Space", FRE(-1)
+kc = 100
+'natural healing
+IF hp < mhp THEN
+        healing = healing + 1
+        IF healing > 16000 THEN
+                healing = 0
+                hp = hp + 1
+                hpchange = 1
+        END IF
+END IF
+IF mp < mmp AND aqua = 0 THEN
+        manarestore = manarestore + 1
+        IF manarestore > 19000 THEN
+                manarestore = 0
+                mp = mp + 1
+                mpchange = 1
+        END IF
+END IF
+IF mv < mmv THEN mv = mv + .0025
+
+
+'if on temple then heal
+d = (xpl) + (ypl * 25)
+
+IF t(d) = 13 AND start$ = "Town1" THEN
+        hp = mhp
+        mp = mmp
+        hpchange = 1
+        mpchange = 1
+END IF
+d = 0
+
+'underwater
+IF LEFT$(start$, 5) = "Water" THEN
+        IF aqua = 1 THEN
+                manazap = manazap + 1
+                IF manazap > 8000 THEN
+                        mpchange = 1
+                        mp = mp - 1
+                        manazap = 0
+                END IF
+                IF mp < 0 THEN mp = 0
+                IF mp = 0 THEN aqua = 0
+                
+        END IF
+        IF aqua = 0 THEN
+        hpzap = hpzap + 1
+        IF hpzap > 6000 THEN
+
+                        hpzap = 0
+                        hpchange = 1
+                        hp = hp - 1
+                END IF
+        END IF
+
+END IF
+
+
+'death
+IF INT(hp) <= 0 THEN
+        sleeptime = 900000
+
+        CLS
+        SCREEN 13
+        DEF SEG = &HA000
+        'BLOAD "C:\rpg\death.dis", 0
+        BLOAD "death2.dis", 0
+
+        FOR sleepin = 1 TO sleeptime: NEXT
+
+        LOCATE 23, 6
+        PRINT "Press the space key to continue"
+
+        DO
+
+        LOOP UNTIL INKEY$ = " "
+        hp = mhp
+        IF hp = 0 THEN hp = 1
+        mp = mmp
+        start$ = "Town1"
+        xpl = 11
+        ypl = 3
+        xpl2 = 15
+        ypl2 = 9
+        xpl3 = 17
+        ypl3 = 12
+
+
+        levchange = 1
+        expr = expr * .5
+        gp = gp * .25
+        
+        maploaded = 0
+        GOTO 1001
+END IF
+
+gp = INT(gp) ' make sure gold is an integer
+
+' status
+
+CALL statuschange(expr, lev, oldlev, hp, mhp, mp, mmp, hpchange, levchange, gp, gpchange, mv, mmv, thac0, oldgp, mpchange)
+
+IF armoron = 1 THEN
+        armtime = armtime + 1
+        IF armtime > 100000 THEN
+                armtime = 0
+                armoron = 0
+        END IF
+END IF
+
+IF dalive = 2 THEN dalive = 1
+d = (xpl) + (ypl * 25)
+
+'---------------------------------------------------------------------------------
+'                               load from keyboard
+'---------------------------------------------------------------------------------
+
+  IF kl = 1 THEN
+  kl = 0
+  
+  DEF SEG = 0: k = INP(&H60)
+  
+  WHILE LEN(INKEY$): WEND
+  'menu return line
+368
+  ext = 0
+  SELECT CASE k
+  
+  CASE &HB9
+  'nothing
+  nospace = 0
+
+    CASE &H3B   'F1
+        CALL helppage
+        maploaded = 0
+        GOTO 1001
+    CASE &H3D   'F3  =save
+        menuyes = 1
+        menuselect = 5
+    CASE &H3E  ' F4 = load
+        menuyes = 1
+        menuselect = 6
+    CASE &H40 'F6  =magic
+        menuyes = 1
+        menuselect = 4
+    CASE &H41 ' F7 =inventory
+        menuyes = 1
+        menuselect = 3
+
+    CASE &H3F   'F5
+        CLS
+        SCREEN 12
+        COLOR 3: PRINT "Health"
+        PRINT ""; INT(hp); "out of"; mhp; ""
+        COLOR 1: PRINT "Mana"; INT(mp)
+        COLOR 2: PRINT "Level:"; lev
+        COLOR 3: PRINT "Experience points:"; expr
+        COLOR 4:  PRINT "Thac0 (hit probability)"; thac0
+        COLOR 5:   PRINT "Armor class:"; ac
+        COLOR 6:    PRINT "Gold: "; gp
+        PRINT ""
+        COLOR 14
+        IF armoron = 1 THEN PRINT "Armor spell: AC - 4"
+        IF aqua = 1 THEN PRINT "Aquabreath on: You can breath underwater."
+        COLOR 15:  PRINT " Press any key to continue"
+        SLEEP
+
+        maploaded = 0
+        GOTO 1001
+    
+
+    CASE &H1D   'Ctrl
+    CASE &H1C   'enter
+    CASE &H91   'w
+    CASE &H50                        'down
+        'variables for exit handling later
+        direct = 3: ylim = 15: ext = 1
+
+        'if within boundary move man on the screen.
+    IF ypl < 15 THEN
+        IF tsolid(d + 25) = 0 THEN
+                IF ypl + 1 <> ypl2 OR xpl <> xpl2 THEN
+                        kl = 0
+                        klf = 0
+                        PUT (xpl * 10, ypl * 10), pathtemp, PSET
+                        charmov = 1
+                        ypl = ypl + 1
+                END IF
+        END IF
+    END IF
+   
+    CASE &H48                ' up
+        tilup = t(d - 25)
+        tilupleft = t(d - 26)
+
+        direct = 1: ylim = 1: ext = 1
+
+    IF ypl >= 1 THEN
+        
+        IF tsolid(d - 25) = 0 OR tilupleft = 14 AND tilup = 14 THEN
+                IF ypl - 1 <> ypl2 OR xpl <> xpl2 THEN
+                       
+                        IF ypl - 1 = ypl4 AND xpl = xpl4 AND reward = 0 THEN GOTO 6780      'reject if walking man2 in islandscreen
+                        kl = 0               'don't allow to move again for a little bit
+                        klf = 0
+                        PUT (xpl * 10, ypl * 10), pathtemp, PSET'redraw tile behind current character
+                        charmov = 1  'character moved
+                        ypl = ypl - 1
+    
+                END IF
+        END IF
+    END IF
+
+6780
+    CASE &H4B     ' left
+        
+                direct = 4: xlim = 1: ext = 1
+
+        IF tsolid(d - 1) = 0 AND xpl >= 1 THEN
+                IF xpl - 1 <> xpl2 OR ypl <> ypl2 THEN
+                        kl = 0
+                        klf = 0
+                        IF t(d - 1) = 15 AND salive = 1 THEN     'if theres a spider hole and the spider is alive then
+                                monster = 2
+                                fight = 1
+                                flee = 0
+                        END IF
+                        IF t(d) = 6 AND tileset = 1 THEN PUT (xpl * 10, ypl * 10 - 3), pathtemp, PSET
+                        IF t(d) = 12 AND tileset = 1 THEN PUT (xpl * 10, ypl * 10 - 3), pathtemp, PSET
+                        IF t(d) <> 6 AND t(d) <> 12 OR t(d) = 6 AND tileset <> 1 THEN PUT (xpl * 10, ypl * 10), pathtemp, PSET
+                        IF t(d) <> 6 AND t(d) <> 12 OR t(d) = 12 AND tileset <> 1 THEN PUT (xpl * 10, ypl * 10), pathtemp, PSET
+                        charmov = 1
+                        xpl = xpl - 1
+                END IF
+        END IF
+    
+    CASE &H4D          'right
+    
+        direct = 2: xlim = 25: ext = 1
+        
+        IF tsolid(d + 1) = 0 AND xpl < 26 THEN
+                IF xpl + 1 <> xpl2 OR ypl <> ypl2 THEN
+                        kl = 0
+                        klf = 0
+                        IF t(d) = 6 AND tileset = 1 THEN PUT (xpl * 10, ypl * 10 - 3), pathtemp, PSET
+                        IF t(d) = 12 AND tileset = 1 THEN PUT (xpl * 10, ypl * 10 - 3), pathtemp, PSET
+                        IF t(d) <> 6 AND t(d) <> 12 OR t(d) = 6 AND tileset <> 1 THEN PUT (xpl * 10, ypl * 10), pathtemp, PSET
+                        IF t(d) <> 6 AND t(d) <> 12 OR t(d) = 12 AND tileset <> 1 THEN PUT (xpl * 10, ypl * 10), pathtemp, PSET
+                        charmov = 1
+                        xpl = xpl + 1
+                END IF
+        END IF
+    
+    CASE 1
+      EXIT DO 'esc will end program
+    CASE &H39 'space key
+              IF nospace = 0 THEN
+                        nospace = 1
+                        CALL menu(menuselect)
+                        menuyes = 1
+              END IF
+
+    END SELECT
+
+
+
+
+
+
+IF ext = 1 THEN
+        ext = 0
+        'load current data
+        tilcurrent = t(d)
+        tilup = t(d - 25)
+        tilright = t(d + 1)
+        tildown = t(d + 25)
+        tilleft = t(d - 1)
+        oldstart$ = start$
+        oldxpl = xpl
+        oldypl = ypl
+
+
+        'Find segment for the appropriate direction
+    OPEN "exits.dat" FOR INPUT AS #1
+        carrots = 0
+        DO
+                INPUT #1, Rd$
+                IF direct = 1 AND Rd$ = "^UP" THEN EXIT DO
+                IF direct = 2 AND Rd$ = "^RIGHT" THEN EXIT DO
+                IF direct = 3 AND Rd$ = "^DOWN" THEN EXIT DO
+                IF direct = 4 AND Rd$ = "^LEFT" THEN EXIT DO
+        LOOP
+
+
+        'load conditionals
+        DO
+                INPUT #1, Rd$
+                IF Rd$ = "==" THEN
+                        didchange = 0: EXIT DO
+                END IF
+                IF Rd$ = "$" THEN
+                        INPUT #1, fstart$
+                        IF fstart$ = oldstart$ THEN
+                                INPUT #1, fxpl$
+                                xyes = 0
+                                IF fxpl$ = "N" THEN xyes = 1
+                                IF fxpl$ = "L" AND oldxpl = xlim THEN xyes = 1
+                                IF VAL(fxpl$) = oldxpl THEN xyes = 1
+                                IF xyes = 1 THEN
+
+                                        INPUT #1, fypl$
+                                        yyes = 0
+                                        IF fypl$ = "N" THEN yyes = 1
+                                        IF fypl$ = "L" AND oldypl = ylim THEN yyes = 1
+                                        IF VAL(fypl$) = oldypl THEN yyes = 1
+
+                                        IF yyes = 1 THEN
+                                                INPUT #1, newstart$
+                                                cont = 0
+                                                IF newstart$ <> "S" THEN cont = 1
+                                                IF newstart$ = "S" THEN 'checkfor tiles up/down/etc.
+                                                        INPUT #1, tlc
+                                                        SELECT CASE direct
+                                                        CASE 1
+                                                                IF tilup = tlc THEN cont = 1
+                                                        CASE 2
+                                                                IF tilright = tlc THEN cont = 1
+                                                        CASE 3
+                                                                IF tildown = tlc THEN cont = 1
+                                                        CASE 4
+                                                                IF tilleft = tlc THEN cont = 1
+                                                        END SELECT
+
+                                                        INPUT #1, newstart$
+                                                END IF
+
+                                                IF cont = 1 THEN
+                                                        start$ = newstart$
+                                                        INPUT #1, newxpl$
+                                                        INPUT #1, newypl$
+                                                        IF newxpl$ = "N" THEN
+                                                                xpl = oldxpl
+                                                                ELSE
+                                                                        xpl = VAL(newxpl$)
+                                                        END IF
+                                                        IF newypl$ = "N" THEN
+                                                                ypl = oldypl
+                                                                ELSE
+                                                                        ypl = VAL(newypl$)
+                                                        END IF
+                                                        IF newxpl$ = "L" THEN
+                                                                IF direct = 2 THEN xpl = 1
+                                                                IF direct = 4 THEN xpl = 25
+                                                        END IF
+                                                        IF newypl$ = "L" THEN
+                                                                IF direct = 1 THEN ypl = 15
+                                                                IF direct = 3 THEN ypl = 1
+                                                        END IF
+ 
+                                                        didchange = 1
+
+                                                        'display new
+                                                       ' LOCATE 1, 1
+                                                        'PRINT start$
+                                                        'LOCATE 2, 1
+                                                        'PRINT xpl
+                                                        'LOCATE 3, 1
+                                                        'PRINT ypl
+                                                        'SLEEP 1
+
+                                                        EXIT DO
+                                                END IF
+                                        END IF
+
+                                END IF
+                        END IF
+                END IF
+        LOOP
+
+
+    CLOSE
+
+
+    'special bonuses
+    'secret hallway
+    IF xpl = 4 AND start$ = "Elder" AND direct = 2 THEN
+                start$ = "Elder2"
+                didchange = 1
+                books = 1
+                xpl = xpl + 1
+        END IF
+    'katan chest
+        IF tilup = 2 AND start$ = "Elder3" AND sword4 = 0 THEN
+                sword4 = 1
+                chestnum = 1
+                CALL gotasword(chestnum)
+                didchange = 1
+                wepequip = wepequip + 32
+        END IF
+
+
+'if exit found then load new map
+    IF didchange = 1 THEN
+        xpl3 = 17
+        ypl3 = 12
+
+        maploaded = 0
+        GOTO 1001
+    END IF
+
+END IF
+END IF
+
+
+IF menudone = 0 THEN
+menudone = 1
+             
+        CALL menu(menuselect)
+        menuyes = 1
+         nospace = 1
+
+END IF
+
+
+IF menuyes = 1 THEN
+
+        SELECT CASE menuselect
+                CASE 1
+                 equip = 0'reset variables
+                 chainm = 0
+                 save = 0
+                 load = 0
+
+                CASE 2 'score
+                        k = &H3F
+                        menudone = 0
+                        nospace = 1
+                        GOTO 368
+
+                CASE 3: equip = 1  'inv
+                CASE 4: chainm = 1 ' magic spells
+                CASE 5: save = 1   'save
+                CASE 6: load = 1   'load
+        END SELECT
+        menudone = 0
+        menuyes = 0
+        nospace = 1
+        maploaded = 0
+        GOTO 1001
+END IF
+
+
+
+IF kl = 0 THEN klf = klf + 1
+
+IF klf > kc THEN kl = 1
+'---------------------------------------
+'end keyboard area of program
+'-----------------------------------------------
+
+
+
+
+
+
+'              display characters
+
+        DEF SEG = &HA000
+'wild animals             in forest
+IF LEFT$(start$, 6) = "Forest" AND start$ <> "Forest" AND start$ <> "Forest2" THEN
+        FOR t = 1 TO numwild
+                IF wildalive(t) = 1 THEN
+                        IF thruwild(t) = 0 THEN
+4567
+                                wildmoved(t) = 1
+                                wildmov(t) = INT(RND * wildmovf(t)) + 1
+                                 xwild(t) = INT((RND * 24)) + 1
+                                ywild(t) = INT((RND * 15)) + 1
+                                d = xwild(t) + (ywild(t) * 25)
+
+                                IF t(d) <> 1 AND t(d) <> 4 THEN
+                                        xwild(t) = 0
+                                        ywild(t) = 0
+                                        GOTO 4567
+                                END IF
+                        END IF
+                        wildmov(t) = wildmov(t) + 1
+                      
+                        IF wildmov(t) > wildmovf(t) AND t > 1 THEN
+                                wildmov(t) = 0
+                                wildmoved(t) = 1
+                        END IF
+                        IF wildmoved(t) = 1 THEN
+                                thruwild(t) = 1
+                                wildmoved(t) = 0
+                                wildmov = 0
+                                d = xwild(t) + (ywild(t) * 25)
+                                IF t(d) <> 1 AND t(d) <> 4 THEN d = 0
+                                IF d < 26 OR d > 15 * 25 + 25 THEN
+4569
+                                        xwild(t) = INT((RND * 24)) + 1
+                                        ywild(t) = INT((RND * 15)) + 1
+                                        
+                                        d = xwild(t) + (ywild(t) * 25)
+                                        IF t(d) <> 1 AND t(d) <> 4 THEN GOTO 4569
+                                END IF
+
+                        
+                                visible(t) = 0
+
+                                wildmovdir(t) = INT(RND * 5) + 1
+                                IF wildmovdir(t) = 1 AND t(d - 25) <> 5 AND t(d - 25) <> 3 AND t(d - 25) <> 12 AND t(d - 25) <> 2 AND t(d - 25) <> 14 AND t(d - 25) <> 16 THEN
+                                        yyes = 1
+                                        FOR t2 = 1 TO numwild
+                                        
+                                         IF ywild(t) - 1 = ywild(t2) AND xwild(t) = xwild(t2) THEN yyes = 0
+                                      
+                                        NEXT
+                                        IF ywild(t) - 1 = ypl AND xwild(t) = xpl THEN yyes = 0
+                                        IF yyes = 1 THEN
+                                                ywild(t) = ywild(t) - 1
+                                        END IF
+                                       
+                                END IF
+      
+                                        IF wildmovdir(t) = 2 AND t(d + 1) <> 5 AND t(d + 1) <> 3 AND t(d + 1) <> 12 AND t(d + 1) <> 2 AND t(d + 1) <> 14 AND t(d + 1) <> 16 THEN
+                                                        xyes = 1
+                                                FOR t2 = 1 TO numwild
+                                               
+                                                        IF xwild(t) + 1 = xwild(t2) AND ywild(t) = ywild(t2) THEN xyes = 0
+                                     
+                                                NEXT
+                                                IF xwild(t) + 1 = xpl AND ywild(t) = ypl THEN xyes = 0
+                                               
+                                                        IF xyes = 1 THEN
+                                                                xwild(t) = xwild(t) + 1
+                                                        END IF
+                                               
+                                        END IF
+
+                                        IF wildmovdir(t) = 3 AND t(d + 25) <> 5 AND t(d + 25) <> 3 AND t(d + 25) <> 12 AND ypl2 < 15 AND t(d + 25) <> 2 AND t(d + 25) <> 14 AND t(d + 25) <> 16 THEN
+                                                yyes = 1
+                                                FOR t2 = 1 TO numwild
+                                               
+                                                IF wildmon(t2) + 1 = wildmon(t2) AND xwild(t2) = xwild(t2) THEN yyes = 0
+                                             
+                                                NEXT
+                                                IF ywild(t) + 1 = ypl AND xwild(t) = xpl THEN yyes = 0
+                                               
+                                                        IF yyes = 1 THEN
+                                                                ywild(t) = ywild(t) + 1
+                                                        END IF
+                                               
+                                        END IF
+                                        IF wildmovdir(t) = 4 AND t(d - 1) <> 5 AND t(d - 1) <> 3 AND t(d - 1) <> 12 AND t(d - 1) <> 2 AND t(d - 1) <> 14 AND t(d - 1) <> 16 THEN
+                                                xyes = 1
+                                                FOR t2 = 1 TO numwild
+                                                       
+                                                        IF xwild(t) - 1 = xwild(t2) AND ywild(t) = ywild(t2) THEN xyes = 0
+                                     
+                                                NEXT
+                                                     
+                                                IF xwild(t) - 1 = xpl AND ywild(t) = ypl THEN xyes = 0
+                                               
+                                                        IF xyes = 1 THEN
+                                                                xwild(t) = xwild(t) - 1
+                                                        END IF
+                                               
+                                        END IF
+
+                                         IF ABS((xwild(t)) - xpl) < 4 AND ABS((ywild(t)) - ypl) < 4 THEN
+                                                visible(t) = 1
+                                         ELSE
+                                                visible(t) = 0
+                                         END IF
+                                         IF xwild(t) = xpl AND ABS(ywild(t) - ypl) < 2 OR ywild(t) = ypl AND ABS(xwild(t) - xpl) < 2 THEN visible(t) = 1
+                                         
+
+                                'remline to make critters visible sometimes
+                                            visible(t) = 0
+
+
+                                END IF
+                                IF xwild(t) = xpl AND ywild(t) = ypl AND flee = 0 THEN
+                                        
+                                        
+                                        monster = wildtype(t) + 4
+                                        fight = 1
+                                       
+                                        
+                                           FOR t7 = 1 TO numwild
+                                                        thruwild(t7) = 0
+                                                   NEXT
+                                        
+                                        IF flee = 1 THEN
+                                                DO
+                                                        fleedir = INT((RND * 4)) + 1
+                                                        SELECT CASE fleedir
+                                                                CASE 1
+                                                                        IF xwild(t) = xpl AND t((xwild(t) + ywild(t) * 25) + 1) = 1 OR xwild(t) = xpl AND t((xwild(t) + ywild(t) * 25) + 1) = 4 AND xwild(t) < 25 THEN xwild(t) = xwild(t) + 1
+                                                                CASE 2
+                                                                        IF xwild(t) = xpl AND t((xwild(t) + ywild(t) * 25) - 1) = 1 OR xwild(t) = xpl AND t((xwild(t) + ywild(t) * 25) - 1) = 4 AND xwild(t) > 1 THEN xwild(t) = xwild(t) - 1
+                                                                CASE 3
+                                                                        IF ywild(t) = ypl AND t((xwild(t) + ywild(t) * 25) + 25) = 1 OR ywild(t) = ypl AND t((xwild(t) + ywild(t) * 25) + 25) = 4 AND ywild(t) < 14 THEN ywild(t) = ywild(t) + 1
+                                                                CASE 4
+                                                                        IF ywild(t) = ypl AND t((xwild(t) + ywild(t) * 25) - 25) = 1 OR ywild(t) = ypl AND t((xwild(t) + ywild(t) * 25) - 25) = 4 AND ywild(t) > 1 THEN ywild(t) = ywild(t) - 1
+                                                        END SELECT
+IF xwild(t) <> xpl AND t(xwild(t) + ywild(t) * 25) = 1 OR ywild(t) <> ypl AND t(xwild(t) + ywild(t) * 25) = 1 OR xwild(t) <> xpl AND t(xwild(t) + ywild(t) * 25) = 4 OR ywild(t) <> ypl AND t(xwild(t) + ywild(t) * 25) = 4 THEN EXIT DO
+                                                LOOP
+                                         
+                                         flee = 0
+                                        maploaded = 0
+                                        GOTO 1001
+                                         END IF
+                                END IF
+                        END IF
+       
+        NEXT
+END IF
+
+
+IF start$ = "Forest2" THEN
+
+        'sub that handles random movement of gang members
+        CALL gangmove(nummons, xmon(), ymon(), monalive(), thrumons(), firsttimeput, monmov(), monmovf(), monmoved(), t(), gang(), pathtemp4(), pathtemp5(), pathtemp6(), pathtemp7(), pathtemp8(), monmovdir(), xyes, yyes)
+END IF
+
+
+IF start$ = "Forest2" THEN
+FOR t = 1 TO nummons
+        IF monalive(t) = 1 THEN
+                                        IF flee = 1 THEN
+                                        IF monster = 4 THEN ypl = ypl + 1
+                                        IF monster = 3 THEN
+                                                xmon(t) = INT(RND * 20) + 2
+                                                ymon(t) = INT(RND * 10) + 2
+                                        END IF
+                                         END IF
+
+                                IF xmon(t) = xpl AND ymon(t) = ypl AND flee = 0 THEN
+                                        
+                                        IF montype(t) = 3 THEN monster = 3
+                                        IF montype(t) = 4 THEN monster = 4
+                                        
+                                        battletime = 1
+                                        FOR t7 = 1 TO nummons
+
+                                                thrumons(t7) = 1
+                                        NEXT
+
+                                        fight = 1
+1945
+                                        
+
+                                         flee = 0
+                                         FOR t6 = 1 TO nummons
+                                         
+                                                monmoved(t6) = 1
+                                         NEXT
+                                END IF
+                        END IF
+                NEXT t
+       
+       
+        END IF
+
+     
+       ' man 1 town 1
+       d = (xpl2) + (ypl2 * 25)
+       IF start$ = "Town1" THEN
+                cewmov = cewmov + 1
+                IF cewmov > movf * 4 THEN
+                        cewmov = 0
+                        change = 1
+      
+                        IF firstcharmov = 0 THEN
+        
+                                PUT (xpl2 * 10, ypl2 * 10), pathtemp2%, PSET
+                        END IF
+                END IF
+        END IF
+        IF start$ = "Town1" THEN
+              IF change = 1 THEN
+                 GET (xpl2 * 10, ypl2 * 10)-(xpl2 * 10 + xp - 1, ypl2 * 10 + yp - 1), pathtemp2%
+                firstcharmov = 0
+                change = 0
+                d = 0
+                FOR y = (ypl2 * 10) TO yp + (ypl2 * 10) - 1
+                FOR x = (xpl2 * 10) TO xp + (xpl2 * 10) - 1
+                        d = d + 1
+                        IF c2(d) <> 254 THEN POKE x + y * 320, c2(d)
+                NEXT x
+                NEXT y
+               END IF
+        END IF
+        ' man 2 islandarea
+       d = (xpl4) + (ypl4 * 25)
+       IF start$ = "Island" THEN
+              IF change2 = 1 AND reward = 0 THEN
+                change2 = 0
+                d = 0
+                FOR y = (ypl4 * 10) TO yp + (ypl4 * 10) - 1
+                FOR x = (xpl4 * 10) TO xp + (xpl4 * 10) - 1
+                        d = d + 1
+                        IF c2(d) <> 254 THEN POKE x + y * 320, c2(d)
+                NEXT x
+                NEXT y
+               END IF
+       END IF
+       
+IF dalive = 1 AND start$ = "Town2" THEN
+IF dchange = 1 THEN GET (xpl3 * 10, ypl3 * 10)-(xpl3 * 10 + xp - 1, ypl3 * 10 + yp - 1), pathtemp2%
+       'Dog
+
+                dmov = dmov + 1
+                IF dmov > movf THEN
+                        dmov = 0
+                        dchange = 1
+
+                dmovdir = INT(RND * 6) + 1
+                 ELSE
+                 dmovdir = 0
+
+                END IF
+
+       
+        IF start$ = "Town2" THEN
+              IF dchange = 1 THEN
+                               
+                        PUT (xpl3 * 10, ypl3 * 10), pathtemp2%, PSET
+       
+        d = (xpl3) + (ypl3 * 25)
+        IF dmovdir = 1 AND t(d - 25) <> 5 AND t(d - 25) <> 3 AND t(d - 25) <> 12 AND t(d - 25) <> 2 AND t(d - 25) <> 14 THEN
+                IF ypl3 - 1 <> ypl OR xpl3 <> xpl THEN
+                        ypl3 = ypl3 - 1
+                END IF
+        END IF
+        IF dmovdir = 2 AND t(d + 1) <> 5 AND t(d + 1) <> 3 AND t(d + 1) <> 12 AND t(d + 1) <> 2 AND t(d + 1) <> 14 THEN
+                IF xpl3 + 1 <> xpl OR ypl3 <> ypl THEN
+                        xpl3 = xpl3 + 1
+                END IF
+        END IF
+        IF dmovdir = 3 AND t(d + 25) <> 5 AND t(d + 25) <> 3 AND t(d + 25) <> 12 AND ypl3 < 15 AND t(d + 25) <> 2 AND ypl3 < 15 AND t(d + 25) <> 14 THEN
+                IF ypl3 + 1 <> ypl OR xpl3 <> xpl THEN
+                        ypl3 = ypl3 + 1
+                END IF
+        END IF
+        IF dmovdir = 4 AND t(d - 1) <> 5 AND t(d - 1) <> 3 AND t(d - 1) <> 12 AND t(d - 1) <> 2 AND t(d - 1) <> 14 THEN
+                IF xpl3 - 1 <> xpl OR ypl3 <> ypl THEN
+                        xpl3 = xpl3 - 1
+                END IF
+        END IF
+
+        
+                dchange = 0
+                GET (xpl3 * 10, ypl3 * 10)-(xpl3 * 10 + xp - 1, ypl3 * 10 + yp - 1), pathtemp2%
+                d = 0
+                FOR y = (ypl3 * 10) TO yp + (ypl3 * 10) - 1
+                FOR x = (xpl3 * 10) TO xp + (xpl3 * 10) - 1
+                        d = d + 1
+                        IF c3(d) <> 254 THEN POKE x + y * 320, c3(d)
+                NEXT x
+                NEXT y
+               END IF
+        END IF
+END IF
+
+d = (xpl) + (ypl * 25)
+
+
+      'Main character  (you)
+
+       IF charmov = 1 THEN
+                IF t(d) = 6 AND tileset = 1 THEN GET (xpl * 10, ypl * 10 - 3)-(xp - 1 + xpl * 10, yp - 1 + ypl * 10 - 3), pathtemp
+                
+                IF t(d) = 12 AND tileset = 1 THEN GET (xpl * 10, ypl * 10 - 3)-(xp - 1 + xpl * 10, yp - 1 + ypl * 10 - 3), pathtemp
+                IF t(d) <> 12 AND t(d) <> 6 OR t(d) = 12 AND tileset <> 1 THEN GET (xpl * 10, ypl * 10)-(xp - 1 + xpl * 10, yp - 1 + ypl * 10), pathtemp
+                IF t(d) <> 12 AND t(d) <> 6 OR t(d) = 6 AND tileset <> 1 THEN GET (xpl * 10, ypl * 10)-(xp - 1 + xpl * 10, yp - 1 + ypl * 10), pathtemp
+                charmov = 0
+        END IF
+
+        d = 0
+        throughbridge = 0
+        FOR y = (ypl * 10) TO yp + (ypl * 10) - 1
+        FOR x = (xpl * 10) TO xp + (xpl * 10) - 1
+                d2 = (xpl) + (ypl * 25)
+
+                IF t(d2) = 6 AND throughbridge = 0 AND tileset = 1 THEN
+                        y = y - 3
+                        throughbridge = 1
+                END IF
+                IF t(d2) = 12 AND throughbridge = 0 AND tileset = 1 THEN
+                        y = y - 3
+                        throughbridge = 1
+                END IF
+
+                 d = d + 1
+                IF aqua = 0 THEN IF d < points THEN IF cdi(d) <> 254 THEN POKE x + y * 320, cdi(d)
+                IF aqua = 1 THEN IF d < points THEN IF cdi12(d) <> 16 THEN POKE x + y * 320, cdi12(d)
+        NEXT x
+        NEXT y
+
+d = (xpl) + (ypl * 25)
+
+'-----------------------------------------
+'greetings               (people talk to you)
+'-------------------------------------------
+        IF start$ <> "Town2" THEN
+                xpl3 = 0
+                ypl3 = 0
+
+        END IF
+        IF start$ <> "Town1" THEN
+                xpl2 = 0
+                ypl2 = 0
+        END IF
+        IF start$ <> "Island" THEN
+                xpl4 = 0
+                ypl4 = 0
+        END IF
+
+
+
+        IF start$ <> "Town1" THEN selftalked1 = 0
+        IF start$ <> "Island" THEN fishtalk = 0 'captain
+        IF start$ <> "Elder" AND start$ <> "Elder2" THEN eldertalk = 0
+
+
+
+        
+greetime = greetime + 1
+IF greetime > 10000 THEN
+  greeter = 1
+END IF
+IF greeter = 1 THEN
+
+        'get fisherguy to talk
+        IF t(d) = 12 AND t(d + 1) = 2 AND start$ = "Island" AND fishtalk = 0 THEN
+                        person = 550
+                        chaing = 1
+        END IF
+        'get elder to talk
+        IF xpl = 13 AND ypl = 9 AND eldertalk = 0 THEN
+                IF start$ = "Elder" OR start$ = "Elder2" THEN
+                        person = 500
+                        chaing = 1
+                END IF
+        END IF
+        'talk to yourself about daddy
+        IF t(d) = 13 AND start$ = "Home" THEN
+                person = 12
+                chaing = 1
+        END IF
+        'talk to ppl in houses in town
+        IF LEFT$(start$, 5) = "House" THEN
+                IF t(d - 25) = 14 OR t(d + 1) = 14 OR t(d - 1) = 14 OR t(d + 25) = 14 THEN
+                        IF start$ = "House4" THEN person = 600
+                        IF start$ = "House2" THEN person = 650
+                        IF start$ = "House3" THEN person = 700
+                        chaing = 1
+                END IF
+        END IF
+        ' near man 1 in town 1
+        IF xpl2 = xpl - 1 AND ypl2 = ypl OR xpl2 = xpl + 1 AND ypl2 = ypl OR ypl2 = ypl - 1 AND xpl2 = xpl OR ypl2 = ypl + 1 AND xpl2 = xpl AND start$ = "Town1" THEN
+                
+                               whichman = 1
+                               'decide what character should say based on events
+                               CALL greethandler(dalive, talked2, person, returned, expr, talked3, whichman, gp, reward, weapon$, knife, sword1, wepequip)
+                               
+                          chaing = 1
+                
+        END IF
+        'near man 2 in island area
+        IF xpl4 = xpl AND ypl4 = ypl - 1 AND reward = 0 THEN
+                
+                                whichman = 2
+                                CALL greethandler(dalive, talked2, person, returned, expr, talked3, whichman, gp, reward, weapon$, knife, sword1, wepequip)
+                                chaing = 1
+                
+        END IF
+
+END IF
+
+'dog fights you
+IF xpl3 = xpl AND ypl3 = ypl AND dalive = 1 THEN
+    monster = 1
+fight = 1
+
+END IF
+
+'area for entering buildings
+d = (xpl) + (ypl * 25)
+IF start$ = "Town1" OR start$ = "Town2" THEN
+        IF t(d) = 12 OR t(d) = 14 THEN
+                enter = 1
+        END IF
+END IF
+
+IF start$ = "Forest16" AND xpl = 13 AND ypl = 8 THEN
+        enter = 1
+END IF
+
+IF person = 0 AND chaing = 1 THEN chaing = 0'if it doesn't know whta to say then don't say it
+
+
+'if talking fighting or entering a building then
+IF chaing = 1 OR fight = 1 OR enter = 1 THEN
+        maploaded = 0
+        d = xpl + ypl * 25
+        curtile = t(d)
+        GOTO 1001
+END IF
+
+        
+LOOP' UNTIL INKEY$ = CHR$(27)
+'end of program loop
+70
+GOTO 9000
+
+        '------------------------------
+        '            QUIT
+        '------------------------------
+
+9000
+CLS
+SCREEN 13
+PRINT "Thank you for playing..........."
+DO
+cthr = cthr + 1
+FOR c = 32 TO 54 STEP .05
+COLOR c
+LOCATE 10, 1
+PRINT "           Good bye"
+NEXT
+LOOP UNTIL cthr > 2 OR INKEY$ <> ""
+END
+
+
+
+400
+999
+CLS
+SCREEN 12
+PRINT "A program error has occured."
+PRINT "error:"
+PRINT ERR
+PRINT "line:"
+PRINT ERL
+PRINT "This map:"; map$
+PRINT "exiting...."
+SLEEP
+END
+
+REM $STATIC
+SUB gangmove (nummons, xmon(), ymon(), monalive(), thrumons(), firsttimeput, monmov(), monmovf(), monmoved(), t(), gang(), pathtemp4(), pathtemp5(), pathtemp6(), pathtemp7(), pathtemp8(), monmovdir(), xyes, yyes)
+xp = 10
+yp = 10
+points = xp * yp
+        FOR t = 1 TO nummons
+                IF xmon(t) = 0 THEN thrumons(t) = 0
+                IF ymon(t) = 0 THEN thrumons(t) = 0
+
+
+                IF monalive(t) = 1 THEN
+                        IF thrumons(t) = 0 THEN
+1234                                           thrumons(t) = 1
+
+
+
+
+                                firsttimeput = 1
+
+
+                               monmoved(t) = 0
+                                monmov(t) = INT(RND * monmovf(t)) + 1
+                                IF xmon(t) = 0 THEN xmon(t) = INT((RND * 24)) + 1
+                                IF ymon(t) = 0 THEN ymon(t) = INT((RND * 15)) + 1
+
+                                d = xmon(t) + (ymon(t) * 25)
+
+                                IF t(d) <> 1 AND t(d) <> 4 THEN
+                                        xmon(t) = 0
+                                        ymon(t) = 0
+                                        GOTO 1234
+                                END IF
+                                IF xmon(t) = xpl AND ymon(t) = ypl THEN GOTO 1234
+
+
+                                        IF t = 1 THEN
+                                                xmon(t) = 5
+                                                ymon(t) = 4
+
+                                        END IF
+
+                                        IF t = 2 THEN GET (xmon(t) * 10, ymon(t) * 10)-(xmon(t) * 10 + xp - 1, ymon(t) * 10 + yp - 1), pathtemp4
+                                        IF t = 3 THEN GET (xmon(t) * 10, ymon(t) * 10)-(xmon(t) * 10 + xp - 1, ymon(t) * 10 + yp - 1), pathtemp5
+                                        IF t = 4 THEN GET (xmon(t) * 10, ymon(t) * 10)-(xmon(t) * 10 + xp - 1, ymon(t) * 10 + yp - 1), pathtemp6
+                                        IF t = 5 THEN GET (xmon(t) * 10, ymon(t) * 10)-(xmon(t) * 10 + xp - 1, ymon(t) * 10 + yp - 1), pathtemp7
+                                        IF t = 6 THEN GET (xmon(t) * 10, ymon(t) * 10)-(xmon(t) * 10 + xp - 1, ymon(t) * 10 + yp - 1), pathtemp8
+
+                        END IF
+
+                        d = xmon(t) + (ymon(t) * 25)
+                        monmov(t) = monmov(t) + 1
+
+                        IF monmov(t) > monmovf(t) THEN
+                                monmov(t) = 0
+                                monmoved(t) = 1
+                        END IF
+694
+
+                        IF monmoved(t) = 1 THEN
+                                thrumons(t) = 1
+                                monmoved(t) = 0
+
+                                d = xmon(t) + (ymon(t) * 25)
+                                                  IF t = 1 THEN
+                                                        xmon(t) = 5
+                                                        ymon(t) = 4
+                                                  END IF
+                                IF t = 2 THEN PUT (xmon(t) * 10, ymon(t) * 10), pathtemp4, PSET
+                                IF t = 3 THEN PUT (xmon(t) * 10, ymon(t) * 10), pathtemp5, PSET
+                                IF t = 4 THEN PUT (xmon(t) * 10, ymon(t) * 10), pathtemp6, PSET
+                                IF t = 5 THEN PUT (xmon(t) * 10, ymon(t) * 10), pathtemp7, PSET
+                                IF t = 6 THEN PUT (xmon(t) * 10, ymon(t) * 10), pathtemp8, PSET
+                                                firsttimeput = 0
+                                monmovdir(t) = INT(RND * 5) + 1
+                                d = xmon(t) + (ymon(t) * 25)
+                                IF monmovdir(t) = 1 AND t(d - 25) <> 5 AND t(d - 25) <> 3 AND t(d - 25) <> 12 AND t(d - 25) <> 2 AND t(d - 25) <> 14 THEN
+                                        yyes = 1
+                                        FOR t2 = 1 TO nummons
+
+                                         IF ymon(t) - 1 = ymon(t2) AND xmon(t) = xmon(t2) THEN yyes = 0
+
+                                        NEXT
+                                        IF ymon(t) - 1 = ypl AND xmon(t) = xpl THEN yyes = 0
+                                        IF yyes = 1 THEN
+                                                ymon(t) = ymon(t) - 1
+                                        END IF
+
+                                END IF
+
+                                        IF monmovdir(t) = 2 AND t(d + 1) <> 5 AND t(d + 1) <> 3 AND t(d + 1) <> 12 AND t(d + 1) <> 2 AND t(d + 1) <> 14 THEN
+                                                        xyes = 1
+                                                FOR t2 = 1 TO nummons
+
+                                                        IF xmon(t) + 1 = xmon(t2) AND ymon(t) = ymon(t2) THEN xyes = 0
+
+                                                NEXT
+                                                IF xmon(t) + 1 = xpl AND ymon(t) = ypl THEN xyes = 0
+
+                                                        IF xyes = 1 THEN
+                                                                xmon(t) = xmon(t) + 1
+                                                        END IF
+
+                                        END IF
+
+                                        IF monmovdir(t) = 3 AND t(d + 25) <> 5 AND t(d + 25) <> 3 AND t(d + 25) <> 12 AND ypl2 < 15 AND t(d + 25) <> 2 AND t(d + 25) <> 14 THEN
+                                                yyes = 1
+                                                FOR t2 = 1 TO nummons
+
+                                                IF ymon(t) + 1 = ymon(t2) AND xmon(t) = xmon(t2) THEN yyes = 0
+
+                                                NEXT
+                                                IF ymon(t) + 1 = ypl AND xmon(t) = xpl THEN yyes = 0
+
+                                                        IF yyes = 1 THEN
+                                                                ymon(t) = ymon(t) + 1
+                                                        END IF
+
+                                        END IF
+                                        IF monmovdir(t) = 4 AND t(d - 1) <> 5 AND t(d - 1) <> 3 AND t(d - 1) <> 12 AND t(d - 1) <> 2 AND t(d - 1) <> 14 THEN
+                                                xyes = 1
+                                                FOR t2 = 1 TO nummons
+
+                                                        IF xmon(t) - 1 = xmon(t2) AND ymon(t) = ymon(t2) THEN xyes = 0
+
+                                                NEXT
+
+                                                IF xmon(t) - 1 = xpl AND ymon(t) = ypl THEN xyes = 0
+
+                                                        IF xyes = 1 THEN
+                                                                xmon(t) = xmon(t) - 1
+                                                        END IF
+
+                                        END IF
+                                                        'always put boss in one square
+                                                  IF t = 1 THEN
+                                                        xmon(t) = 5
+                                                        ymon(t) = 4
+                                                  END IF
+
+                                        IF t = 1 THEN GET (xmon(t) * 10, ymon(t) * 10)-(xmon(t) * 10 + xp - 1, ymon(t) * 10 + yp - 1), pathtemp3
+                                        IF t = 2 THEN GET (xmon(t) * 10, ymon(t) * 10)-(xmon(t) * 10 + xp - 1, ymon(t) * 10 + yp - 1), pathtemp4
+                                        IF t = 3 THEN GET (xmon(t) * 10, ymon(t) * 10)-(xmon(t) * 10 + xp - 1, ymon(t) * 10 + yp - 1), pathtemp5
+                                        IF t = 4 THEN GET (xmon(t) * 10, ymon(t) * 10)-(xmon(t) * 10 + xp - 1, ymon(t) * 10 + yp - 1), pathtemp6
+                                        IF t = 5 THEN GET (xmon(t) * 10, ymon(t) * 10)-(xmon(t) * 10 + xp - 1, ymon(t) * 10 + yp - 1), pathtemp7
+                                        IF t = 6 THEN GET (xmon(t) * 10, ymon(t) * 10)-(xmon(t) * 10 + xp - 1, ymon(t) * 10 + yp - 1), pathtemp8
+
+                                        d = 0
+                                        FOR y = (ymon(t) * 10) TO yp + (ymon(t) * 10) - 1
+                                        FOR x = (xmon(t) * 10) TO xp + (xmon(t) * 10) - 1
+                                                d = d + 1
+                                                IF gang(d) <> 16 THEN POKE x + y * 320, gang(d)
+                                        NEXT x
+                                        NEXT y
+                                END IF
+
+                       END IF
+
+
+NEXT t
+
+
+END SUB
+
+SUB generatewild (numwildmax, numwild, thruwild(), wildmovf(), wildtype(), wildalive())
+      
+        IF numwild = 0 THEN numwild = INT(RND * (numwildmax - 1)) + 2        'number of wild animals in forest
+        IF numwild > numwildmax THEN
+
+        numwild = numwildmax
+        END IF
+        FOR t = 1 TO numwild
+                thruwild(t) = 0
+                wildmovf(t) = 90
+              
+     
+     
+        randomwild = INT(RND * 100) + 1
+        critter$ = " "
+        IF randomwild > 0 AND randomwild < 71 THEN
+                critter$ = "common"
+             
+        END IF
+        IF randomwild > 70 AND randomwild < 98 THEN
+                critter$ = "uncommon"
+        END IF
+        IF randomwild > 97 THEN
+                critter$ = "rare"
+        END IF
+        IF critter$ = " " THEN critter$ = "common"
+        SELECT CASE critter$
+                CASE "common"
+                        critterand = INT(RND * 2) + 1
+                        IF critterand = 1 THEN wildtype(t) = 1
+                        IF critterand = 2 THEN wildtype(t) = 2
+                CASE "uncommon"
+                        critterand = INT(RND * 6) + 1
+                        IF critterand = 1 THEN wildtype(t) = 3
+                        IF critterand = 2 THEN wildtype(t) = 4
+                        IF critterand = 3 THEN wildtype(t) = 5
+                        IF critterand = 4 THEN wildtype(t) = 6
+                        IF critterand = 5 THEN wildtype(t) = 7
+                        IF critterand = 6 THEN wildtype(t) = 8
+
+                CASE "rare"
+                        critterand = INT(RND * 3) + 1
+                        IF critterand = 1 THEN wildtype(t) = 9
+                        IF critterand = 2 THEN wildtype(t) = 10
+                        IF critterand = 3 THEN wildtype(t) = 11
+        END SELECT
+      
+                wildalive(t) = 1
+                randomness = INT(RND * 100) + 1
+                IF randomness = 100 THEN harmlessness = 1
+                IF harmlessness = 1 THEN wildtype(t) = 12
+                harmlessness = 0
+        NEXT
+
+END SUB
+
+SUB gotasword (chestnum)
+REDIM sword4col(100)
+
+sleeptime = 500000
+LINE (20, 20)-(220, 120), 0, BF
+       
+       
+IF chestnum = 1 THEN
+        OPEN "sword5.dat" FOR INPUT AS #1
+                FOR y = 0 TO 9
+                FOR x = 0 TO 9
+                        INPUT #1, sword4col
+                        PSET (20 + x, 20 + y), sword4col
+                NEXT
+                NEXT
+        CLOSE
+        LOCATE 6, 4
+        PRINT "You got a magical"
+        LOCATE , 4
+        PRINT "Katana!"
+        FOR sleepin = 1 TO sleeptime: NEXT
+        LOCATE , 4
+        LOCATE , 4
+        PRINT "Press Space to continue."
+       
+END IF
+
+
+
+DO
+LOOP UNTIL INKEY$ = " "
+ERASE sword4col
+END SUB
+
+SUB greethandler (dalive, talked2, person, returned, expr, talked3, whichman, gp, reward, weapon$, knife, sword1, wepequip)
+
+person = 0
+SELECT CASE whichman
+CASE 1
+                               IF dalive = 1 AND talked2 = 0 THEN person = 1
+                               IF dalive = 1 AND talked2 = 1 AND returned = 1 THEN
+                                        person = 5
+                               END IF
+                            
+                               IF dalive = 1 AND talked2 = 1 AND returned = 0 THEN
+                                        returned = 1
+                                        person = 4
+                                        expr = expr + 50
+                               END IF
+
+                               IF dalive = 0 AND talked2 = 1 AND talked3 = 1 THEN
+                                        randtalk = INT(RND * 3) + 1
+                                        IF randtalk = 3 THEN person = 8
+                                        IF randtalk = 2 THEN
+                                                person = 9
+                                                ELSE
+                                                person = 10
+                                        END IF
+                               END IF
+
+                               IF dalive = 0 AND talked2 = 1 AND talked3 = 0 THEN
+                                        talked3 = 1
+                                        person = 7
+                               END IF
+CASE 2
+                                IF dalive = 1 AND talked2 = 1 THEN person = 6
+                                IF dalive = 1 AND talked2 = 0 THEN
+                             
+                                        person = 2
+                                        IF wepequip - 32 <> 0 THEN weapon$ = "sword1"
+                                        IF sword1 = 0 THEN wepequip = wepequip + 1
+                                        talked2 = 1
+                                END IF
+                               
+                               IF dalive = 0 AND talked2 = 1 AND reward = 0 THEN
+                                        person = 3
+                                        gp = gp + INT(RND * 250) + 50
+                                       
+                                        expr = expr + 250
+                                        reward = 1
+                               END IF
+                               IF dalive = 0 AND talked2 = 0 AND reward = 0 THEN
+                                        IF wepequip - 32 <> 0 THEN weapon$ = "sword1"
+                                        IF sword1 = 0 THEN wepequip = wepequip + 1
+                               
+                                        talked2 = 1
+                                        reward = 1
+                                        expr = expr + 250
+                                        gp = gp + INT(RND * 250) + 50
+                                        person = 11
+                               END IF
+
+
+
+END SELECT
+END SUB
+
+SUB helppage
+    'help
+        CLS
+        SCREEN 12
+        COLOR 1
+        LOCATE 3, 3
+        PRINT "Help Screen (Press F1 to get here again)"
+        COLOR 15
+        LOCATE 5, 4
+        PRINT "Esc - Quit (remember to save before quitting!)"
+        LOCATE 6, 4
+        PRINT "F3  - Save game (save while outside of stores and combat)"
+        LOCATE 7, 4
+        PRINT "F4  - Load game"
+        LOCATE 8, 4
+        PRINT "F5  - Score sheet"
+        LOCATE 9, 4
+        PRINT "F6  - Spells"
+        LOCATE 10, 4
+        PRINT "F7  - Inventory (look at inventory and use items)"
+        LOCATE 11, 4
+        PRINT "Space - In game menu"
+        LOCATE 12, 4
+        PRINT "Arrow Keys - Move Character/ Change selection in menu."
+        PRINT ""
+        PRINT "     Press any key to continue"
+        SLEEP
+        CLS
+        SCREEN 13
+        DEF SEG = &HA000
+
+
+
+END SUB
+
+SUB menu (menuselect)
+nospace = 1
+y = 32
+oldy = 56
+selection = 1
+kc = 70000
+sleeptime = 150000
+
+selectlimit = 6
+'display menu options
+LINE (210, 5)-(315, 163), 0, BF
+
+LINE (215, 32)-(220, 37), 27, BF
+
+COLOR 48
+LOCATE 2, 30
+PRINT "Main Menu"
+COLOR 74
+LOCATE 5, 29
+PRINT "Resume"
+LOCATE 8, 29
+PRINT "Score sheet"
+LOCATE 11, 29
+PRINT "Inventory"
+LOCATE 14, 29
+PRINT "Magic"
+LOCATE 17, 29
+PRINT "Save game"
+LOCATE 20, 29
+PRINT "Load game"
+
+
+firstg = 1
+DO
+'load from keyboard
+  IF kl = 1 THEN
+  kl = 0
+  DEF SEG = 0: k = INP(&H60)
+  WHILE LEN(INKEY$): WEND
+  'IF firstg = 1 THEN
+  'firstg = 0
+  'k = &H48
+  'END IF
+  SELECT CASE k
+    CASE &H50
+    'up
+
+     kl = 0
+     klf = 0
+    changed = 1
+
+    selection = selection + 1
+
+    CASE &H48
+    'down
+    changed = 1
+
+    selection = selection - 1
+    kl = 0
+    klf = 0
+    CASE &HB9
+    'nothing depressed
+    nospace = 0
+
+
+    CASE &H39
+    'space
+    IF nospace = 0 THEN
+
+        nospace = 1
+        EXIT DO
+    END IF
+END SELECT
+END IF
+
+IF kl = 0 THEN klf = klf + 1
+IF klf > kc THEN kl = 1
+
+
+IF selection > selectlimit THEN selection = selectlimit
+IF selection < 1 THEN selection = 1
+IF changed = 1 THEN
+        
+        oldy = y
+        SELECT CASE selection
+                CASE 1: y = 32
+
+                CASE 2: y = 56
+                CASE 3: y = 80
+                CASE 4: y = 104
+                CASE 5: y = 128
+                CASE 6: y = 152
+        END SELECT
+        x = 215
+
+        LINE (x, oldy)-(x + 5, oldy + 5), 0, BF
+
+        LINE (x, y)-(x + 5, y + 5), 27, BF
+        'place to put selecter pointer
+END IF
+changed = 0
+LOOP
+
+menuselect = selection
+END SUB
+
+SUB spellbit (magicmissle, curelight, createwater, armor, spellbitv, oldspellbitv)
+
+oldspellbitv = spellbitv
+
+IF spellbitv >= 16 THEN
+        spellbitv = spellbitv - 16
+        aquabreath = 1
+END IF
+IF spellbitv >= 8 THEN
+        spellbitv = spellbitv - 8
+        curelight = 1
+END IF
+IF spellbitv >= 4 THEN
+        spellbitv = spellbitv - 4
+        createwater = 1
+END IF
+IF spellbitv >= 2 THEN
+        spellbitv = spellbitv - 2
+        armor = 1
+END IF
+IF spellbitv >= 1 THEN
+        spellbitv = spellbitv - 1
+        magicmissle = 1
+END IF
+
+spellbitv = oldspellbitv
+
+
+END SUB
+
+SUB statuschange (expr, lev, oldlev, hp, mhp, mp, mmp, hpchange, levchange, gp, gpchange, mv, mmv, thac0, oldgp, mpchange)
+oldlev = lev
+IF expr < 0 THEN expr = 0
+IF expr < 600 THEN lev = 1
+IF expr > 599 AND expr < 2500 THEN lev = 2
+IF expr > 2499 AND expr < 4000 THEN lev = 3
+IF expr > 3999 AND expr < 8000 THEN lev = 4
+IF expr > 7999 AND expr < 16000 THEN lev = 5
+IF expr > 15999 AND expr < 32000 THEN lev = 6
+IF expr > 31999 AND expr < 64000 THEN lev = 7
+IF expr > 63999 AND expr < 128000 THEN lev = 8
+IF expr > 127999 AND expr < 256000 THEN lev = 9
+IF expr > 255999 THEN lev = 10
+thac0 = 20 - lev
+mhp = lev * 6 + 2
+mmp = lev * lev
+mmv = lev * 20 + 80
+IF oldlev <> lev THEN
+        levchange = 1
+        mp = mmp
+        hp = mhp
+        hpchange = 1
+        mpchange = 1
+END IF
+IF oldgp <> gp THEN gpchange = 1
+IF levchange = 1 OR gpchange = 1 THEN
+        LINE (220, 165)-(310, 190), 0, BF
+END IF
+IF gpchange = 1 THEN
+        gpchange = 0
+        COLOR 15
+        LOCATE 23, 29
+        PRINT "Gold:"
+        LOCATE 23, 33
+       
+        IF gp < 9999 THEN PRINT INT(gp)
+        IF gp > 9999 THEN PRINT "9999"
+
+END IF
+oldgp = gp
+
+IF levchange = 1 THEN
+       
+        levchange = 0
+        COLOR 15
+        LOCATE 22, 29
+        PRINT "Level:"
+        LOCATE 22, 34
+        PRINT lev
+END IF
+
+IF hp > mhp THEN hp = mhp
+IF mp > mmp THEN mp = mmp
+IF mv > mmv THEN mv = mmv
+IF hpchange = 1 THEN
+        hpchange = 0
+        LINE (20, 170)-(120, 175), 0, BF
+        LINE (20, 170)-(120 + ((INT(hp) / mhp) * 100) - 100, 175), 4, BF
+END IF
+IF mpchange = 1 THEN
+        mpchange = 0
+        LINE (20, 180)-(120, 185), 0, BF
+        LINE (20, 180)-(120 + ((INT(mp) / mmp) * 100) - 100, 185), 33, BF
+        
+END IF
+END SUB
+
+SUB weaponchoice (weapon$, attd, atpl, tow$, weapondesc$, lev)
+'stats affected by eq
+SELECT CASE weapon$
+        CASE "nothing"
+                attd = lev + 1
+                atpl = lev
+                tow$ = "punch"
+        CASE "sword1"
+                attd = 9
+                atpl = 1
+                tow$ = "slash"
+                weapondesc$ = "An old, rusty, blunt longsword"
+        CASE "sword2"
+                attd = 11
+                atpl = 3
+                tow$ = "slash"
+                weapondesc$ = "A finely crafted longsword"
+        CASE "sword3"
+                attd = 15
+                atpl = lev + 2
+                tow$ = "slash"
+                weapondesc$ = "A broadsword"
+        CASE "sword4"
+                attd = 35 + lev
+                atpl = INT(lev * 2.5)
+                tow$ = "slash"
+                weapondesc$ = "A magically enchanted katana"
+        CASE "staff1"
+                attd = 5
+                atpl = 1
+                tow$ = "staff"
+                weapondesc$ = "a bo staff"
+        CASE "dagger1"
+                attd = 6
+                atpl = 3
+                tow$ = "stab"
+                weapondesc$ = "A Neshkelese dirk"
+END SELECT
+
+END SUB
+
+SUB weaponequip (wepequip, sword1, sword2, sword3, staff1, dagger1, sword4)
+
+oldwepequip = wepequip
+IF wepequip >= 32 THEN
+        wepequip = wepequip - 32
+        sword4 = 1
+END IF
+IF wepequip >= 16 THEN
+        wepequip = wepequip - 16
+        dagger1 = 1
+END IF
+IF wepequip >= 8 THEN
+        wepequip = wepequip - 8
+        staff1 = 1
+END IF
+IF wepequip >= 4 THEN
+        wepequip = wepequip - 4
+        sword3 = 1
+END IF
+IF wepequip >= 2 THEN
+        wepequip = wepequip - 2
+        sword2 = 1
+END IF
+IF wepequip >= 1 THEN
+        wepequip = wepequip - 1
+        sword1 = 1
+END IF
+
+wepequip = oldwepequip
+
+END SUB
+
