@@ -52,8 +52,8 @@ hr {
     /*row labels in new pastey form */
 #body_wrapper th{
     text-align: right;
-    padding: 5px 3px;
-    font-size: 14px;    
+    padding: 5px 2px;
+    font-size: 13px;    
 }
 #body_wrapper table{
     padding: 2px;
@@ -86,48 +86,49 @@ hr {
     left: 0px;    
     display: inline-block;
     float: right;
-    margin: 0px 3px;
+    margin: 1px 0px;
     z-index: 1;
 }
    /* style chooser in detail view */
 #styler {
     position: relative;   
-    top: -18px;
-    left: -180px;
+    top: -25px;
+    left: -70px;
     display: inline;
     float: left;
     padding: 0px 5px;
-    margin: 0px 10px 0px 10px;
+    margin: 0px;
 }
     /*tabs in detail view */
 #plain_tab a:link, #plain_tab a:visited,
 #copy_tab a:link, #copy_tab a:visited, 
-#html_tab a:link, #html_tab a:visited{
-
+#html_tab a:link, #html_tab a:visited,
+#download_tab a:link, #download_tab a:visited{
     display: inline;    
     text-align: center;
     margin: 0px;
-    padding: 6px 20px;
+    padding: 6px 21px;
     text-decoration: none;
     background-color: #E5D164;
     color: #505050;
 }
 #plain_tab a:hover, #plain_tab a:active,
 #copy_tab a:hover, #copy_tab a:active, 
-#html_tab a:hover, #html_tab a:active{
+#html_tab a:hover, #html_tab a:active,
+#download_tab a:hover, #download_tab a:active{
     text-align: left;
     position: relative;
     top: -2px;
     left: 0px;
     margin: 0px;
-    padding: 6px 20px 8px 20px;
+    padding: 6px 21px 8px 21px;
     text-decoration: none;
     background-color: #FEFEA0;
     color: #808080;
 }
 #detail_code{
     position: relative;
-    top: -39px;
+    top: -42px;
     left: 0px;
     z-index: 0;
     padding: 3px 9px;

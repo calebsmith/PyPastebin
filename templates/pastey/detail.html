@@ -18,14 +18,11 @@
                     </span>
                 </form>        
             </div>       
-
-        {% endif %}
-
+        {% endif %}        
 
         <!--Title-->
         <div id="title_and_styler">
-            <div id="paste_title"><h2>{{paste.title|title}}</h2></div>
-           
+            <div id="paste_title"><h2>{{paste.title|title}}</h2></div>                   
         </div>   
     
         <div id="paste_info">    
@@ -50,13 +47,11 @@
                     {{paste.get_language_display}}
                 {% else %} 
                     an unspecified programming language
-                {% endif %} 
-           </p>    
+                {% endif %}
         </div>
-        
-        <!--Code paste tabs        -->
-        <div id="detail_options">        
-        
+
+        <!--Code paste tabs-->
+        <div id="detail_options">
             <!--Style chooser drop down menu and submit button-->
             <div id="styler">
                 <form action="#" method="post">{% csrf_token %}
@@ -70,11 +65,13 @@
 	                        </tr>
                         </table>	
                 </form>
-            </div>	       
+            </div>	
+                   
             <!--Alternate detail tabs-->
             <span id="plain_tab"><a href="/pastey/plain/{{paste.id}}/">Plain</a></span>
             <span id="html_tab"><a href="/pastey/html/{{paste.id}}/{{current_style}}">HTML</a></span>            
             <span id="copy_tab"><a href="/pastey/{{paste.id}}">Copy</a></span>
+            <span id="download_tab"><a href="{{paste.txt_file.url}}">Download</a></span>
         </div>
         
         <!--Formatted text-->

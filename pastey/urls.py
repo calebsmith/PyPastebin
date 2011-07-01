@@ -9,5 +9,5 @@ urlpatterns = patterns('',
     (r'^detail/(?P<code_id>\d+)/$', views.detail),
     (r'^plain/(?P<code_id>\d+)/$', views.plain),
     (r'^html/(?P<code_id>\d+)/(?P<style_id>\w+)/$', views.html),
+) 
 
-)

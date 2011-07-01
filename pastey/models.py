@@ -70,7 +70,7 @@ class CodeForm(ModelForm):
             f.close()          
             
         else:
-            name = code.title + str(code.pub_date)
+            name = code.title + str(code.pub_date) + ".txt" 
             content = ContentFile(code.code_paste)
             code.txt_file.save(name, content) 
             code.txt_file.close()            
