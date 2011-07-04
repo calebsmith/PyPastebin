@@ -50,20 +50,21 @@ hr {
     margin: 0px 5px 15px 5px;
 }
     /*row labels in new pastey form */
-#body_wrapper th{
+#newform th{
     text-align: right;
     padding: 5px 2px;
     font-size: 13px;    
 }
-#body_wrapper table{
+#newform table{
     padding: 2px;
 }
-#body_wrapper textarea{
+#newform textarea{
     min-width: 300px;
     min-height: 150px;
     max-width:  660px;
     max-height: 350px;    
 }
+
 #body_wrapper .button_class {
     margin: 2px 25px;
     padding: 3px 5px;
@@ -133,7 +134,10 @@ hr {
     z-index: 0;
     padding: 3px 9px;
 }
-
+/* list view */
+#search {
+   
+}
 /* code pastes in list view */
 #paste_list{
     padding: 10px 5px;

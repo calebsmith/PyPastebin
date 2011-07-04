@@ -1,34 +1,36 @@
-<table>
-    <tr>
-        <th>{{form.code_paste.label}}</th>
-        <td>{{form.code_paste}}</td>                    
-    </tr>
-    <tr>
-        <th>{{form.language.label}}</th>
-        <td>{{form.language}}</td>
-    </tr>
-    <tr>
-        <th>{{form.title.label}}</th>
-        <td>{{form.title}}</td>
-    </tr>
-    <tr>
-        <th>{{form.author.label}}</th>
-        <td>{{form.author}}</td>
-        
-    </tr>
-    <tr>
-        <th>{{form.email.label}}</th>
-        <td>{{form.email}}</td>
-    </tr>
-    <tr>
-        <th>{{form.private.label}}</th>
-        <td>{{form.private}}</td>
-    </tr>
-    {% if not editing %}
+<div id="newform">
+    <table>
         <tr>
-            <th>{{form.txt_file.label}}</th>
-            <td>{{form.txt_file}}</td>
+            <th>{{form.code_paste.label}}</th>
+            <td>{{form.code_paste}}</td>                    
         </tr>
-    {% endif %}
-</table>
-<div class="button_class"><input type="submit" name="paste" value="Paste" /></div>
+        <tr>
+            <th>{{form.language.label}}</th>
+            <td>{{form.language}}</td>
+        </tr>
+        <tr>
+            <th>{{form.title.label}}</th>
+            <td>{{form.title}}</td>
+        </tr>
+        <tr>
+            <th>{{form.author.label}}</th>
+            <td>{{form.author}}</td>
+            
+        </tr>
+        <tr>
+            <th>{{form.email.label}}</th>
+            <td>{{form.email}}</td>
+        </tr>
+        <tr>
+            <th>{{form.private.label}}</th>
+            <td>{{form.private}}</td>
+        </tr>
+        {% if not editing %}
+            <tr>
+                <th>{{form.txt_file.label}}</th>
+                <td>{{form.txt_file}}</td>
+            </tr>
+        {% endif %}
+    </table>
+    <div class="button_class"><input type="submit" name="paste" value="Paste" /></div>
+</div>

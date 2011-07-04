@@ -11,10 +11,36 @@
 
 {% block content %}    
     <div id= "body_wrapper">
+        <!--Show search box and search fields pull down-->
+        <div id="search" >
+            <form name = "search" action ="#" method="POST">{% csrf_token %}
+                <table>
+                    <tr>
+                        <th>
+                            {{form.keyword.label}}
+                        </th>
+                        <td>{{form.keyword}}</td>
+                        <td>{{form.field}}</td>
+                        <td><input type="submit" name="search" value="Ok" />
+                        </td>
+                        <tr>
+                        <td></td>
+                        <td>showing {{results}} 
+                        {% if results == 1 %}
+                            result
+                        {% else %}
+                            results
+                        {% endif %}
+                        </td>
+                        </tr>
+                    </tr>
+                </table>
+                
+            </form>
+        </div>
         <!--Show recent code pastes (that are not flagged as private)-->
         <div id="paste_list">
-        {% if pastes|length > 0 %}
-
+        {% if pastes|length > 0 %}            
             <div id="pager" class="site_link">
                 <p>
                 {% if page.has_other_pages and page.has_previous %}

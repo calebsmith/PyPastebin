@@ -17,10 +17,9 @@ def list_page(request, code_id):
     """List all public pastebin submissions
     """
     entries_per_page = 5
-    char_limit = 1200
+    char_limit = 1200    
     
-    
-    #Int the future the delete functionality needs to be done with cronjobs or 
+    #In the future the delete functionality needs to be done with cronjobs or 
     # celery, not in the list view!
     
     #delete old entries
@@ -30,9 +29,43 @@ def list_page(request, code_id):
             paste.txt_file.delete()
             paste.delete()
 
+    #handle form requests for searching
+    if request.method == 'POST':
+        if request.POST.get("search", None):
+            form = SearchForm(request.POST)
+            if form.is_valid():
+                keyword = request.POST.get('keyword')
+                field = request.POST.get('field')
+                if field == "title": 
+                    paste_list = list(Code.objects.exclude(private = True
+                    ).order_by('-pub_date'
+                    ).filter(title__icontains=keyword
+                    ))
+                if field == "author": 
+                    paste_list = list(Code.objects.exclude(private = True
+                    ).order_by('-pub_date'
+                    ).filter(author__icontains=keyword
+                    ))
+                if field == "email": 
+                    paste_list = list(Code.objects.exclude(private = True
+                    ).order_by('-pub_date'
+                    ).filter(email__icontains=keyword
+                    ))
+                if field == "language": 
+                    for choice in LANG_CHOICES:
+                        if keyword.lower() == choice[1].lower(): keyword = choice[0]
+                    paste_list = list(Code.objects.exclude(private = True
+                    ).order_by('-pub_date'
+                    ).filter(language__iexact=keyword
+                    ))
+                
+    #default page load or invalid form
+    else:
+        form = SearchForm()
+        #obtain the list of public pastes from the database, arrange by most recent
+        paste_list = list(Code.objects.exclude(private = True).order_by('-pub_date'))
     
     #use the pretty module (which uses Pygments) to format text. Return text with HTML tags and CSS
-    paste_list = list(Code.objects.exclude(private = True).order_by('-pub_date'))
     text_output = tersify(paste_list, char_limit)
     paste_list = pretty_pastes(text_output)
        
@@ -43,6 +76,8 @@ def list_page(request, code_id):
     last_paste_link = cookie_checker(request)       
     
     return render_to_response('pastey/list.html',{
+        'form': form,
+        'results': len(paste_list),
         'pastes': thispage.object_list,
         'page': thispage, 
         'page_display': str(thispage)[1:-1], 
@@ -62,14 +97,8 @@ def index(request, edit_id = None):
     
     #form handling for making a new paste
     if request.method == 'POST':         
-        form = CodeForm(request.POST, request.FILES) 
-
-        
-        #optimize this section by learning how to obtain the data directly
-        #tease out the code_paste data
-        fields = dict([(k, v) for k, v in request.POST.items()]) 
-        code_paste = fields.get('code_paste')
-       
+        form = CodeForm(request.POST, request.FILES)
+        code_paste = request.POST.get('code_paste')  
        
         #check form validation, and the user must type the code or upload a file   
         if form.is_valid() and (request.FILES or code_paste):    

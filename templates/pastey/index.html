@@ -9,7 +9,7 @@
 {% block content %}
     
     <div id="body_wrapper"> 
-        <!--Provide error message feedback if user clicks paste with no information or file chosen      -->
+        <!--Provide error message feedback if user clicks paste with no information or file chosen-->
         {% if err_msg %}
             <div class="center_text"><p>You must enter some text or select a file to upload</p></div>
         {% endif %}
@@ -17,9 +17,9 @@
         <!--Provide the form to create a paste-->
         <form  enctype="multipart/form-data" action="#" method="POST">{% csrf_token %}	           
             {% include "pastey/newform.html" %}
-        </form>
-        
-        <!--Provide a link to the list_page view        -->
+        </form>  
+    
+        <!--Provide a link to the list_page view-->
         {% if pastes|length > 0 %}         
             <div class="center_text">
                 <span class="site_link">                    
