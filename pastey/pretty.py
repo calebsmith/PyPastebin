@@ -5,15 +5,14 @@ from pygments.styles import get_style_by_name
 
 from pastey.models import Style
 
-
 DEFAULT_STYLE = 'emacs'
 
 def tersify(pastes, charlimit=400):
     """returns a list of Code objects with a truncated code field.
     
     The function takes a list of Code objects as its first argument and returns
-    this list. Thee character limit defaults to 400 and can be set by calling 
-    the function with a second argument. 
+    this list. The character limit defaults to 400 and can be set by calling 
+    the function with a second argument. Setting to 0 returns the full text
     
     The truncated text will contain ... concatenated at the end.
     """
@@ -21,8 +20,9 @@ def tersify(pastes, charlimit=400):
     for paste in pastes:
         if len(paste.code_paste) > charlimit or charlimit == 0:
             paste.code_paste = paste.code_paste[:charlimit]
-            paste.code_paste += '...'
+            if len(paste.code_paste) > charlimit: paste.code_paste += '...'
     return pastes
+    
 
 def pretty_print(paste, style_choice, linenos = "inline", full = False):	
     """Use Pygments library to highlight a TextField       
@@ -43,8 +43,7 @@ def pretty_print(paste, style_choice, linenos = "inline", full = False):
     """
     if paste.language:lexer = get_lexer_by_name(paste.language, stripall=True)
     if not paste.language: lexer = guess_lexer(paste.code_paste, stripall=True)		
-    if not style_choice.highlight: style_choice.highlight = DEFAULT_STYLE	
-    
+    if not style_choice.highlight: style_choice.highlight = DEFAULT_STYLE    
     
     
     formatter = HtmlFormatter(linenos = linenos, full = full, cssclass="source", style= style_choice.highlight)
@@ -52,6 +51,7 @@ def pretty_print(paste, style_choice, linenos = "inline", full = False):
     css_style = formatter.get_style_defs()		
 
     return result, css_style
+    
 
 def pretty_pastes(paste_list):
     """Applies pretty_print and enumerates every object in a list

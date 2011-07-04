@@ -12,7 +12,7 @@ from dateutil.relativedelta import relativedelta
 
 from pygments.lexers import get_lexer_for_filename
 
-from pastey.choices import LANG_CHOICES, STYLE_CHOICES
+from pastey.choices import *
 
 class Code(models.Model):
     code_paste = models.TextField('Code', blank=True, null=True)
@@ -53,10 +53,10 @@ class CodeForm(ModelForm):
             if not code.title: code.title = code.txt_file.name
             
             #find the lexer based on file extension before we add the timestamp
-            code.language = find_file_lexer(code.txt_file.name)           
+            code.language = find_file_lexer(code.txt_file.name)
             
             #add a unique timestamp
-            name = code.txt_file.name + str(code.pub_date)
+            name = str(code.pub_date.strftime('%f')) + "-" + code.txt_file.name
             content = code.txt_file
             
             #save file content
@@ -70,14 +70,16 @@ class CodeForm(ModelForm):
             f.close()          
             
         else:
-            name = code.title + str(code.pub_date) + ".txt" 
-            content = ContentFile(code.code_paste)
-            code.txt_file.save(name, content) 
-            code.txt_file.close()            
-        
-        if not code.title:code.title = 'Code submission'
-        if not code.author:code.author = 'an unknown author'    
+            if not code.title:code.title = 'file'
+            ext = find_lang_ext(code.language)
+            name = code.title + str(code.pub_date.strftime('%f')) + ext
+            content = ContentFile(str(code.code_paste))
+            code.txt_file.save(name, content)
+            code.txt_file.close()
+            code.title = "Untitled Submission"
             
+        if not code.author:code.author = 'an unknown author'
+        
         code.save()
         return code
 
@@ -96,13 +98,28 @@ class StyleForm(ModelForm):
         model = Style
 
 
+def find_lang_ext(language):
+    """Find an appropriate file extension based on the choice of language
+    """
+    
+    x = [x[0] for x in LANG_EXTS]
+    try:
+        extension = LEX_EXTS[x.index(language)]
+    except:
+        extension = "*.txt"
+    ext = str(extension)[1:]        
+    return ext
+
 def find_file_lexer(filename):
     """Use Pygments get_lexer_for_filename to set the language for file uploads
     """
+    
     try:
         lex = get_lexer_for_filename(filename)
         name = lex.aliases[0]
     except:
         name = ""     
     return name
-        
+         
+
+

@@ -11,21 +11,18 @@ FIRST_LEXERS = [name[0] for name in LEXER_LIST]
 #human readable list of these language choices
 READABLE_LANG_CHOICES = [desc[0] for desc in PYG_LANG_CHOICES]
 #list of file extensions for these languages
-LEXER_EXTS = [desc[2] for desc in PYG_LANG_CHOICES]
+PYG_LEXER_EXTS = [desc[2] for desc in PYG_LANG_CHOICES]
 
-x_list = []
-for EXT_LIST in LEXER_EXTS:
-    #print (EXT_LIST)
-    try:
-       
-        x_list.append(EXT_LIST[0])
+LEX_EXTS = []
+for EXT_TUPS in PYG_LEXER_EXTS:
+    try:       
+        LEX_EXTS.append(EXT_TUPS[0])
     except:
-        x_list.append(".txt")
-
-#print (x_list)
+        LEX_EXTS.append("*.txt")
 
 
 LANG_CHOICES = zip(FIRST_LEXERS, READABLE_LANG_CHOICES)
+LANG_EXTS = zip(FIRST_LEXERS, LEX_EXTS)
 
 PYG_STYLE_CHOICES = list(get_all_styles())
 PYG_STYLE_CHOICES.sort()
