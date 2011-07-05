@@ -3,10 +3,33 @@ from pygments.lexers import PythonLexer,  get_lexer_by_name, get_lexer_for_filen
 from pygments.formatters import HtmlFormatter
 from pygments.styles import get_style_by_name
 
-from pastey.models import Style
-
 DEFAULT_STYLE = 'emacs'
 
+def find_lang_ext(language):
+    """Find an appropriate file extension based on the choice of language
+    """
+    
+    x = [x[0] for x in LANG_EXTS]
+    try:
+        extension = LEX_EXTS[x.index(language)]
+    except:
+        extension = "*.txt"
+    ext = str(extension)[1:]        
+    return ext
+
+
+def find_file_lexer(filename):
+    """Use Pygments get_lexer_for_filename to set the language for file uploads
+    """
+    
+    try:
+        lex = get_lexer_for_filename(filename)
+        name = lex.aliases[0]
+    except:
+        name = ""     
+    return name
+
+    
 def tersify(pastes, charlimit=400):
     """returns a list of Code objects with a truncated code field.
     
@@ -68,6 +91,7 @@ def pretty_pastes(paste_list):
     for i in range(1, len(paste_list) + 1):
         item_index.append(i)
     
+    from pastey.models import Style
     style_choice = Style()  
     css_styles = []
     

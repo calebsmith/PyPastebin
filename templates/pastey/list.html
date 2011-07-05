@@ -23,19 +23,18 @@
                         <td>{{form.field}}</td>
                         <td><input type="submit" name="search" value="Ok" />
                         </td>
-                        <tr>
+                    </tr>
+                    <tr>
                         <td></td>
-                        <td>showing {{results}} 
+                        <td colspan = "2">showing {{results}} 
                         {% if results == 1 %}
                             result
                         {% else %}
                             results
                         {% endif %}
                         </td>
-                        </tr>
                     </tr>
-                </table>
-                
+                </table>                
             </form>
         </div>
         <!--Show recent code pastes (that are not flagged as private)-->

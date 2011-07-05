@@ -13,6 +13,7 @@ from dateutil.relativedelta import relativedelta
 from pygments.lexers import get_lexer_for_filename
 
 from pastey.choices import *
+from pastey.pretty import find_lang_ext, find_file_lexer
 
 class Code(models.Model):
     code_paste = models.TextField('Code', blank=True, null=True)
@@ -116,28 +117,6 @@ class SearchForm(ModelForm):
         model = Search
 
 
-def find_lang_ext(language):
-    """Find an appropriate file extension based on the choice of language
-    """
-    
-    x = [x[0] for x in LANG_EXTS]
-    try:
-        extension = LEX_EXTS[x.index(language)]
-    except:
-        extension = "*.txt"
-    ext = str(extension)[1:]        
-    return ext
-
-def find_file_lexer(filename):
-    """Use Pygments get_lexer_for_filename to set the language for file uploads
-    """
-    
-    try:
-        lex = get_lexer_for_filename(filename)
-        name = lex.aliases[0]
-    except:
-        name = ""     
-    return name
          
 
 
