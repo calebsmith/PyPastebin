@@ -43,6 +43,11 @@ class CodeForm(ModelForm):
         model = Code
         exclude = ('pub_date','del_date')     
         
+    def file_delete(self):
+        code = super(CodeForm, self).save(commit=False)
+        code.txt_file.delete()
+        return code
+        
     def save(self):
         code = super(CodeForm, self).save(commit=False)
         

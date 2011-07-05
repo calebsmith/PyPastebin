@@ -3,6 +3,8 @@ from pygments.lexers import PythonLexer,  get_lexer_by_name, get_lexer_for_filen
 from pygments.formatters import HtmlFormatter
 from pygments.styles import get_style_by_name
 
+from pastey.choices import *
+
 DEFAULT_STYLE = 'emacs'
 
 def find_lang_ext(language):

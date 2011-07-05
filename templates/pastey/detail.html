@@ -12,7 +12,7 @@
     <div id="body_wrapper">    
         {% if last_paste == paste.id %}   
             <div class="center_text">            
-                <form name="styler" action="#" method="post">{% csrf_token %}	            
+                <form name="delete" action="#" method="post">{% csrf_token %}	            
                     <span class="site_link">
                         <p>This is your most recent paste. Click <input type="submit" name="delete" value="Delete" /> to delete this paste</p>
                     </span>
@@ -54,7 +54,7 @@
         <div id="detail_options">
             <!--Style chooser drop down menu and submit button-->
             <div id="styler">
-                <form action="#" method="post">{% csrf_token %}
+                <form name = "styler" action="#" method="post">{% csrf_token %}
                         <table>
 	                        <tr>
 	                            <td>{{style_chooser.label}}</td>
