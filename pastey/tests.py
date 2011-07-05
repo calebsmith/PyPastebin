@@ -1,8 +1,8 @@
 import datetime
-from django.utils import unittest
-from django.test import TestCase
 
+from django.test import TestCase
 from django.test.client import Client
+from django.test.client import RequestFactory
 
 from pastey.models import *
 
@@ -86,18 +86,19 @@ class CodeFormTestCase(TestCase):
         self.assertTrue(self.test_paste1.save())
         self.assertTrue(self.test_paste1.file_delete())
         
+        
+        
 
-"""
-class SimpleTest(unittest.TestCase):
-   
+class SimpleTest(TestCase):
+    def setUp(self):
+        # Every test needs access to the request factory.
+        self.factory = RequestFactory()
 
     def test_details(self):
-        # Issue a GET request.
-        response = self.client.get('/customer/details/')
+        # Create an instance of a GET request.
+        request = self.factory.get('/pastey/')
 
-        # Check that the response is 200 OK.
+        # Test my_view() as if it were deployed at /customer/details
+        response = my_view(request)
         self.assertEqual(response.status_code, 200)
-
-        # Check that the rendered context contains 5 customers.
-        self.assertEqual(len(response.context['customers']), 5)                
-"""
+        

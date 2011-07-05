@@ -1,4 +1,4 @@
-PyPastey
+PyPastebin
 
 License:
 This code was developed by Caleb Smith under the GPL. Feel free to use and
@@ -27,11 +27,18 @@ localhost:8000/
 The default admin site can be reached through this URL:
 localhost:8000/admin
 
-When pasting, the user must paste some text in the "Code" text box, but all
-other fields are optional and obtain default values upon submission. The text 
-highlighting library, Pygments, uses a lexer that corresponds to the user's 
-choice and attempts to guess the lexer in the case that the user has not 
-provided the language.
+When pasting, the user may paste some text in the "Code" text box or upload a 
+source file, but all other fields are optional and obtain default values upon 
+submission. The text highlighting library, Pygments, uses a lexer that 
+corresponds to the user's language choice and attempts to guess the lexer in 
+the case that the user has not provided the language. In the case of file 
+uploads, the lexer is chosen based on the file extension.
 
 In the detail view of a paste, the user may choose a different "style" for the 
-text highlighting. The default style is called 'colorful'. 
+text highlighting. The default style is called 'emacs'. The user may also 
+choose to copy the paste, view it in plain text, or view the source of an 
+entire HTML document that renders the submitted source with text highlighting.
+The user may also click "Download" to download the file. If the user is viewing
+their most recent paste, they have the option of deleting it.
+
+The lists view provides a paginated and searchable list of all pastes.
