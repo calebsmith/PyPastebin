@@ -103,23 +103,12 @@ class StyleForm(ModelForm):
 	
     class Meta:
         model = Style
-                
-        
-        
-class Search(models.Model):
+
+class  SearchForm(forms.Form):
     
     field_choices = [('title', 'Title') ,('author', 'Author'),('email', 'Email'),('language','Language')]
-    keyword = models.CharField('Search', max_length = 25, blank = True, null = True)
-    field = models.CharField(max_length = 25, choices=field_choices, default="title")
-    
-    def __unicode__(self):
-        return self.keyword
-
-
-class SearchForm(ModelForm):
-    
-    class Meta:
-        model = Search
+    keyword = forms.CharField(max_length=50)
+    field = forms.CharField(widget = forms.Select(choices=field_choices))
 
 
          

@@ -16,9 +16,7 @@
             <form name = "search" action ="#" method="POST">{% csrf_token %}
                 <table>
                     <tr>
-                        <th>
-                            {{form.keyword.label}}
-                        </th>
+                        <th>Search</th>
                         <td>{{form.keyword}}</td>
                         <td>{{form.field}}</td>
                         <td><input type="submit" name="search" value="Ok" />
