@@ -53,8 +53,8 @@ class CodeTestCase(TestCase):
         self.assertEqual(self.test_vague_paste.__unicode__(), None)
         
     def testGet_absolute_url(self):
-        self.assertEqual(self.test_full_paste.get_absolute_url(), "/pastey/detail/1")
-        self.assertEqual(self.test_vague_paste.get_absolute_url(), "/pastey/detail/" + str(self.test_vague_paste.id))
+        self.assertEqual(self.test_full_paste.get_absolute_url(), "/pastey/1")
+        self.assertEqual(self.test_vague_paste.get_absolute_url(), "/pastey/" + str(self.test_vague_paste.id))
       
     def testDelete(self):
         self.test_full_paste.delete()
@@ -66,11 +66,11 @@ class CodeTestCase(TestCase):
         
         detail_response = self.client.post('/pastey/', {'code_paste' : 'text'}, follow=True)
         
-        self.assertRedirects(detail_response, "/pastey/detail/4/", status_code=302, target_status_code=200)
+        self.assertRedirects(detail_response, "/pastey/4/", status_code=302, target_status_code=200)
         self.assertEqual(detail_response.context['paste'].title, "Untitled Submission")
         
         #Delete the file that gets created amidst the actual user data files
-        del_response = self.client.post('/pastey/detail/4/', {'delete': None}, follow = True)           
+        del_response = self.client.post('/pastey/4/', {'delete': None}, follow = True)           
        
     def test_index(self):
         index_response = self.client.get('')
@@ -86,23 +86,27 @@ class CodeFormTestCase(TestCase):
         self.assertTrue(self.test_paste1.file_delete())
         
         
-#Example from Django Docs        
-
-
-class SimpleTest(TestCase):
+class FactoryTest(TestCase):
     def setUp(self):
-        # Every test needs access to the request factory.
-        self.factory = RequestFactory()
-        self.client = Client()
+        #provide factory for all tests
+        self.factory = RequestFactory()        
 
-    def test_details(self):
-        # Create an instance of a GET request.
-        request = self.factory.get('/pastey/list/1')
-        response =  list_page(request, 1)
-        self.assertEqual(response.status_code, 200)
-        
+    def test_index(self):       
         request = self.factory.get('/pastey/')
         response = index(request)
         self.assertEqual(response.status_code, 200)
         
-        
+    def test_empty_list(self):
+        #database is empty, the list should still display a page stating that
+        request = self.factory.get('/pastey/list/')
+        response =  list_page(request, 1)
+        self.assertEqual(response.status_code, 200)
+    
+    def test_detail(self):
+        #create a paste
+        request = self.factory.post('/pastey/',{'code_paste': 'test'})
+
+#        response = detail(request, 1)
+#        self.assertEqual(response.status_code, 200)
+#        
+#        
