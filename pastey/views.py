@@ -25,7 +25,7 @@ def list_page(request, code_id = 1):
     #delete old entries
     paste_list = Code.objects.all()
     for paste in paste_list:
-        if datetime.datetime.now() > paste.del_date:
+        if datetime.datetime.now() > paste.del_date and paste.txt_file:
             paste.txt_file.delete()
             paste.delete()
 
@@ -36,28 +36,7 @@ def list_page(request, code_id = 1):
             if form.is_valid():
                 keyword = request.POST.get('keyword')
                 field = request.POST.get('field')
-                if field == "title": 
-                    paste_list = list(Code.objects.exclude(private = True
-                    ).order_by('-pub_date'
-                    ).filter(title__icontains=keyword
-                    ))
-                if field == "author": 
-                    paste_list = list(Code.objects.exclude(private = True
-                    ).order_by('-pub_date'
-                    ).filter(author__icontains=keyword
-                    ))
-                if field == "email": 
-                    paste_list = list(Code.objects.exclude(private = True
-                    ).order_by('-pub_date'
-                    ).filter(email__icontains=keyword
-                    ))
-                if field == "language": 
-                    for choice in LANG_CHOICES:
-                        if keyword.lower() == choice[1].lower(): keyword = choice[0]
-                    paste_list = list(Code.objects.exclude(private = True
-                    ).order_by('-pub_date'
-                    ).filter(language__iexact=keyword
-                    ))
+                paste_list = make_query(field, keyword)               
                 
     #default page load or invalid form
     else:
@@ -217,7 +196,33 @@ def copy(request, code_id, style_id):
     'css_style': css_style,
     },context_instance=RequestContext(request))
 
-#not a view!
+#not views!
+def make_query(field, keyword):
+    if field == "title": 
+        paste_list = list(Code.objects.exclude(private = True
+        ).order_by('-pub_date'
+        ).filter(title__icontains=keyword
+        ))
+    if field == "author": 
+        paste_list = list(Code.objects.exclude(private = True
+        ).order_by('-pub_date'
+        ).filter(author__icontains=keyword
+        ))
+    if field == "email": 
+        paste_list = list(Code.objects.exclude(private = True
+        ).order_by('-pub_date'
+        ).filter(email__icontains=keyword
+        ))
+    if field == "language": 
+        for choice in LANG_CHOICES:
+            if keyword.lower() == choice[1].lower(): keyword = choice[0]
+        paste_list = list(Code.objects.exclude(private = True
+        ).order_by('-pub_date'
+        ).filter(language__iexact=keyword
+        ))
+    return paste_list
+
+
 def cookie_checker(request):
     #fetch cookie if possible, otherwise set link to main page.
     try:        
