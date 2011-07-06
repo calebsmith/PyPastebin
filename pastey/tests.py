@@ -90,7 +90,8 @@ class FactoryTest(TestCase):
     def setUp(self):
         #provide factory for all tests
         self.factory = RequestFactory()        
-
+        self.client = Client()#needed for detail page creation
+        
     def test_index(self):       
         request = self.factory.get('/pastey/')
         response = index(request)
@@ -104,9 +105,14 @@ class FactoryTest(TestCase):
     
     def test_detail(self):
         #create a paste
-        request = self.factory.post('/pastey/',{'code_paste': 'test'})
 
-#        response = detail(request, 1)
-#        self.assertEqual(response.status_code, 200)
-#        
-#        
+        detail_response = self.client.post('/pastey/', {'code_paste' : 'text'}, follow=True)
+
+        request = self.factory.get('/pastey/1/')
+        response = detail(request, 1)
+        self.assertEqual(response.status_code, 200)
+        
+        #Delete the file that gets created amidst the actual user data files
+        del_response = self.client.post('/pastey/1/', {'delete': None})           
+        
+
