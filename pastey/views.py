@@ -13,7 +13,7 @@ from pastey.models import *
 from pastey.pretty import * 
 from pastey.choices import *
 
-def list_page(request, code_id):
+def list_page(request, code_id = 1):
     """List all public pastebin submissions
     """
     entries_per_page = 5
@@ -72,6 +72,7 @@ def list_page(request, code_id):
     #use Paginator to spread entries across multiple pages
     pages = Paginator(paste_list, entries_per_page) 
     thispage = pages.page(code_id)
+    
     
     last_paste_link = cookie_checker(request)       
     
@@ -219,15 +220,18 @@ def copy(request, code_id, style_id):
 #not a view!
 def cookie_checker(request):
     #fetch cookie if possible, otherwise set link to main page.
-    if request.session.test_cookie_worked(): 
-            last_paste_link = request.session.get('member_id')
-            if not last_paste_link:
-                last_paste_link = None
-            request.session.delete_test_cookie() 	
-    else:                
-        last_paste_link = None   
+    try:        
+        if request.session.test_cookie_worked(): 
+                request.session.delete_test_cookie() 
+                last_paste_link = request.session.get('member_id')
+                if not last_paste_link: last_paste_link = None
+                            	
+        else:                
+            last_paste_link = None   
 
-    #test if a cookie works. If so, the next page will link to the user's last paste
-    request.session.set_test_cookie()    
+        #test if a cookie works. If so, the next page will link to the user's last paste
+        request.session.set_test_cookie()    
+    except:
+        last_paste_link = None
     return last_paste_link
 

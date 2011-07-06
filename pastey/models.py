@@ -34,7 +34,7 @@ class Code(models.Model):
         return self.title
 
     def get_absolute_url(self):
-        return '/pastey/detail/%i' % self.id
+        return '/pastey/%i' % self.id
 	
 			
 class CodeForm(ModelForm):
@@ -104,10 +104,11 @@ class StyleForm(ModelForm):
     class Meta:
         model = Style
 
+
 class  SearchForm(forms.Form):
     
     field_choices = [('title', 'Title') ,('author', 'Author'),('email', 'Email'),('language','Language')]
-    keyword = forms.CharField(max_length=50)
+    keyword = forms.CharField(max_length = 50)
     field = forms.CharField(widget = forms.Select(choices=field_choices))
 
 

@@ -18,7 +18,7 @@ for EXT_TUPS in PYG_LEXER_EXTS:
     try:       
         LEX_EXTS.append(EXT_TUPS[0])
     except:
-        LEX_EXTS.append("*.txt")
+        LEX_EXTS.append("*.txt")#use .txt if none provided
 
 
 LANG_CHOICES = zip(FIRST_LEXERS, READABLE_LANG_CHOICES)

@@ -5,7 +5,7 @@ from django.test.client import Client
 from django.test.client import RequestFactory
 
 from pastey.models import *
-
+from pastey.views import *
 thisnow = datetime.datetime.now()
 
 class CodeTestCase(TestCase):
@@ -46,12 +46,7 @@ class CodeTestCase(TestCase):
     def testSave(self):
         self.test_full_paste.save()
         self.test_vague_paste.save()
-        self.test_private.save()  
-  
-    def testDelete(self):
-        self.test_full_paste.delete()
-        self.test_vague_paste.delete()
-        self.test_private.delete()
+        self.test_private.save()
         
     def testUnicode(self):
         self.assertEqual(self.test_full_paste.__unicode__(), "Testing")
@@ -60,7 +55,11 @@ class CodeTestCase(TestCase):
     def testGet_absolute_url(self):
         self.assertEqual(self.test_full_paste.get_absolute_url(), "/pastey/detail/1")
         self.assertEqual(self.test_vague_paste.get_absolute_url(), "/pastey/detail/" + str(self.test_vague_paste.id))
-    
+      
+    def testDelete(self):
+        self.test_full_paste.delete()
+        self.test_vague_paste.delete()
+        self.test_private.delete()
         
     #test views
     def test_details(self):       
@@ -87,18 +86,23 @@ class CodeFormTestCase(TestCase):
         self.assertTrue(self.test_paste1.file_delete())
         
         
-        
+#Example from Django Docs        
+
 
 class SimpleTest(TestCase):
     def setUp(self):
         # Every test needs access to the request factory.
         self.factory = RequestFactory()
+        self.client = Client()
 
     def test_details(self):
         # Create an instance of a GET request.
-        request = self.factory.get('/pastey/')
-
-        # Test my_view() as if it were deployed at /customer/details
-        response = my_view(request)
+        request = self.factory.get('/pastey/list/1')
+        response =  list_page(request, 1)
         self.assertEqual(response.status_code, 200)
+        
+        request = self.factory.get('/pastey/')
+        response = index(request)
+        self.assertEqual(response.status_code, 200)
+        
         
