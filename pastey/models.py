@@ -76,7 +76,9 @@ class CodeForm(ModelForm):
             f.close()          
             
         else:
-            ext = find_lang_ext(code.language)            
+
+            ext = find_lang_ext(code.language)   
+            
             if not code.title: code.title = 'file'          
             name = code.title + str(code.pub_date.strftime('%f')) + ext
             if code.title == 'file': code.title = "Untitled Submission"
@@ -86,7 +88,10 @@ class CodeForm(ModelForm):
             code.txt_file.close()
             
         if not code.author:code.author = 'an unknown author'
-        if not code.language:code.language = 'text'
+        if not code.language:
+            pass
+            #code.title += ".txt"
+            #code.language = 'text'
         
         code.save()
         return code
