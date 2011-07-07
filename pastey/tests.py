@@ -22,6 +22,7 @@ class CodeTestCase(TestCase):
             language = "python",
             pub_date = thisnow,
             del_date = thisnow
+            
             )
         self.test_vague_paste = Code.objects.create(
             code_paste = "small code",            
@@ -56,9 +57,8 @@ class CodeTestCase(TestCase):
         self.assertEqual(self.test_vague_paste.__unicode__(), None)
         
     def testGet_absolute_url(self):
-        self.assertEqual(self.test_full_paste.get_absolute_url(), "/pastey/1")
-        self.assertEqual(self.test_vague_paste.get_absolute_url(), "/pastey/" 
-            + str(self.test_vague_paste.id))
+        self.assertEqual(self.test_full_paste.get_absolute_url(), "/pastey/" 
+            + str(self.test_full_paste.id))
       
     def testDelete(self):
         self.test_full_paste.delete()
