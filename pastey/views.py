@@ -18,22 +18,6 @@ def list_page(request, code_id = 1):
     """
     entries_per_page = 5
     char_limit = 1200    
-    
-    """
-    
-    #In the future the delete functionality needs to be done with cronjobs or 
-    # celery, not in the list view!
-    
-    #delete old entries
-    paste_list = Code.objects.all()
-    for paste in paste_list:
-        if datetime.datetime.now() > paste.del_date and paste.txt_file:
-            paste.txt_file.delete()
-            paste.delete()
-            
-            
-    """     
-    
 
     #handle form requests for searching
     if request.method == 'POST':
@@ -72,7 +56,7 @@ def list_page(request, code_id = 1):
         }, context_instance=RequestContext(request))
 	
 def index(request, edit_id = None): 
-    """Provide the pastebin submission form as well as links detail and list views
+    """Provide the pastebin submission form as well as a link to the list view
     """   
     
     #If cookies don't work, or the form doesn't validate a default value is needed
@@ -124,7 +108,9 @@ def detail(request, code_id):
     """Provide a detail view of pasted code
 
     This view provides pasted code with syntax highlighting, line numbers, 
-    and header information such as the author if it was provided upon submittal. 
+    and header information such as the author if it was provided. File 
+    download, highlighting style choices, and alternate views such as plain 
+    text are also provided.
     """
     paste = get_object_or_404(Code, pk = code_id)	
     style_choice = Style()		#To hold the user's chosen highlight style 
@@ -166,6 +152,9 @@ def detail(request, code_id):
         }, context_instance=RequestContext(request))
 
 def plain(request, code_id):
+    """An HTML document with only the plain text of a paste
+    """
+    
     paste = get_object_or_404(Code, pk = code_id)	
     
     last_paste_link = cookie_checker(request)    
@@ -175,6 +164,9 @@ def plain(request, code_id):
     },context_instance=RequestContext(request))
 
 def html(request, code_id, style_id):
+    """An HTML document showing the source code for a paste with highlighting        
+    """
+    
     paste = get_object_or_404(Code, pk = code_id)	
     style_choice = Style()		#To hold the user's chosen highlight style     
 
@@ -189,6 +181,9 @@ def html(request, code_id, style_id):
     },context_instance=RequestContext(request))
 
 def copy(request, code_id, style_id):
+    """Link to the new paste form that copies the data in the current paste
+    """
+    
     paste = get_object_or_404(Code, pk = code_id)	
     style_choice = Style()		#To hold the user's chosen highlight style
          
@@ -204,6 +199,9 @@ def copy(request, code_id, style_id):
 
 #not views!
 def make_query(field, keyword):
+    """Provide search capabilities for the list view    
+    """
+    
     if field == "title": 
         paste_list = list(Code.objects.exclude(private = True
         ).order_by('-pub_date'
@@ -230,7 +228,12 @@ def make_query(field, keyword):
 
 
 def cookie_checker(request):
-    #fetch cookie if possible, otherwise set link to main page.
+    """Fetch cookie if possible and provide a link to the most recent paste 
+    
+    If cookies are disabled or the user has not made a paste, set the link to 
+    the main page.    
+    """
+    
     try:        
         if request.session.test_cookie_worked(): 
                 request.session.delete_test_cookie() 
