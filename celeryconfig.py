@@ -13,7 +13,7 @@ CELERY_IMPORTS = ("tasks", )
 CELERY_AMQP_TASK_RESULT_EXPIRES = 300
 
 CELERYBEAT_SCHEDULE = {
-    "runs-every-30-seconds": {
+    "check-for-old-entries": {
         "delete_old": "tasks.delete_old",
         "args": ()
     },
