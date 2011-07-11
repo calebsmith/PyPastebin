@@ -1,0 +1,199 @@
+/*cross-site basic formatting*/
+body{    
+    width: 760px;
+    margin: auto;
+    background-image:url('../images/wood.jpeg');
+}
+h1, h2, h3 {
+    font-family: georgia, helvetica, serif;
+}
+th, p, a {
+    font-family: arial, times, sans-serif;
+    font-size: 16px;
+}
+hr {
+    width: 90%;
+    background-color: #FEFEA0;
+    color:#FEFE90;
+    height:1px;
+}
+/*top banner*/
+  /*wraps the banner */
+#masthead{
+    display: block;
+    background-color:#FEFFA0;
+/*    //FEFE90*/
+    margin: 15px 5px 0px 5px;
+    padding: 0px 10px;
+    height: 60px;
+}
+    /*logo*/
+#pastey_logo p, #pastey_logo a{
+    display: inline;
+    float: left;
+    margin: 5px;
+    padding: 5px 5px 0px 5px;
+    font: bold 34px georgia, helvetica, serif;
+}
+    /*recent paste link*/
+#most_recent a{
+    display: inline;
+    float: right;
+    font-family: georgia, helvetica, serif;
+    font-size: 20px;
+    padding: 20px 5px 0px 5px;
+}
+/* body wrapper */
+#body_wrapper{
+    background-color:#FFFF80;
+    padding: 10px 4px;
+    margin: 0px 5px 15px 5px;
+}
+    /*row labels in new pastey form */
+#newform th{
+    text-align: right;
+    padding: 5px 2px;
+    font-size: 13px;    
+}
+#newform table{
+    padding: 2px;
+}
+#newform textarea{
+    min-width: 300px;
+    min-height: 150px;
+    max-width:  660px;
+    max-height: 350px;    
+}
+
+#body_wrapper .button_class {
+    margin: 2px 25px;
+    padding: 3px 5px;
+}
+/* Paste title and style chooser */
+    /*wrapper*/
+#title_and_styler{
+    display: block;
+}
+#paste_title{
+    display: inline-block;
+    text-align: center;
+    padding: 0px 15px;
+}
+ 
+/*style chooser and tabs in detail view*/
+#detail_options{
+    position: relative;
+    top: 0px;
+    left: 0px;    
+    display: inline-block;
+    float: right;
+    margin: 1px 0px;
+    z-index: 1;
+}
+   /* style chooser in detail view */
+#styler {
+    position: relative;   
+    top: -25px;
+    left: -70px;
+    display: inline;
+    float: left;
+    padding: 0px 5px;
+    margin: 0px;
+}
+    /*tabs in detail view */
+#plain_tab a:link, #plain_tab a:visited,
+#copy_tab a:link, #copy_tab a:visited, 
+#html_tab a:link, #html_tab a:visited,
+#download_tab a:link, #download_tab a:visited{
+    display: inline;    
+    text-align: center;
+    margin: 0px;
+    padding: 6px 21px;
+    text-decoration: none;
+    background-color: #E5D164;
+    color: #505050;
+}
+#plain_tab a:hover, #plain_tab a:active,
+#copy_tab a:hover, #copy_tab a:active, 
+#html_tab a:hover, #html_tab a:active,
+#download_tab a:hover, #download_tab a:active{
+    text-align: left;
+    position: relative;
+    top: -2px;
+    left: 0px;
+    margin: 0px;
+    padding: 6px 21px 8px 21px;
+    text-decoration: none;
+    background-color: #FEFEA0;
+    color: #808080;
+}
+#detail_code{
+    position: relative;
+    top: -42px;
+    left: 0px;
+    z-index: 0;
+    padding: 3px 9px;
+}
+/* list view */
+#search {
+   
+}
+/* code pastes in list view */
+#paste_list{
+    padding: 10px 5px;
+    margin: 5px 2px;
+}
+#paste_info {
+    text-align: left;
+    display: block;
+    margin: 3px 5px;
+    padding: 3px 10px;
+}
+    /* for next page, previous page, etc.. */
+#pager {
+    text-align: center;
+    display: inline;
+    margin: 0px 5px;
+}
+
+/*style the submitted text with css cross-site (already pretty_printed)*/
+.source {
+    overflow: auto;
+    width: 710px;
+    display: block;
+    margin: 0px 0px;
+    padding: 7px 4px;
+    border: 8px solid #FEFEA0;
+}
+.linenodiv{
+    background-color: #000;
+}
+/*Site links on post-it background*/
+.site_link a:link, .site_link a:visited{
+    color:#404010;
+    text-decoration: none;
+}
+.site_link a:hover, .site_link a:active{
+    color:#A0A080;
+    text-decoration: none;
+}
+
+/*links to detail page from list and index pages*/
+.list_header a:link, .list_header a:visited{
+    color:#404010;
+    display: block;
+    text-decoration: none;
+    background-color: #FEFEA0;
+    padding: 8px 8px;
+    width: 718px;
+}
+.list_header a:hover, .list_header a:active{
+    color:#7c5f36;
+    text-decoration: none;    
+    background-color: #FEFEA0;
+}
+/*cross-site formatting*/
+div.center_text{
+    text-align: center;
+}
+
