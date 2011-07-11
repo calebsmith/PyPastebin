@@ -121,7 +121,7 @@ INSTALLED_APPS = (
     'django.contrib.admin',
     
    # 'south',
-    
+    'djcelery',
     'pastey', 
      #Uncomment the next line to enable admin documentation:
      #'django.contrib.admindocs',
@@ -149,4 +149,10 @@ LOGGING = {
         },
     }
 }
+
+
+import djcelery
+import celeryconfig
+djcelery.setup_loader()
+
 

@@ -19,6 +19,8 @@ def list_page(request, code_id = 1):
     entries_per_page = 5
     char_limit = 1200    
     
+    """
+    
     #In the future the delete functionality needs to be done with cronjobs or 
     # celery, not in the list view!
     
@@ -28,6 +30,10 @@ def list_page(request, code_id = 1):
         if datetime.datetime.now() > paste.del_date and paste.txt_file:
             paste.txt_file.delete()
             paste.delete()
+            
+            
+    """     
+    
 
     #handle form requests for searching
     if request.method == 'POST':
