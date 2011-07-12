@@ -152,8 +152,7 @@ LOGGING = {
 }
 
 
+
 import djcelery
 import celeryconfig
 djcelery.setup_loader()
-
-
