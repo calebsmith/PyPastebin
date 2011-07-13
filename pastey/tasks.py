@@ -6,19 +6,23 @@ from celery.decorators import periodic_task
 from pastey.models import Code, CodeForm
 
     
-@periodic_task(run_every=timedelta(seconds= 900))
-def delete_old():
-    message = ""
-    deletebool = False
+@periodic_task(run_every=timedelta(seconds=120))
+def find_old():
+    delete_sum = 0
     paste_list = Code.objects.all()
+    
     for paste in paste_list:
         if datetime.now() > paste.del_date:
-            deletebool = True
-            message += "Entry " + str(paste.id) + " was deleted"
-            if paste.txt_file: paste.txt_file.delete()            
-            paste.delete()
+            delete_sum += 1
+            delete_old(paste)
 
-            
-    if not deletebool: message += "No old entries were found"
+    if delete_sum: message = str(delete_sum) + " entries were deleted"            
+    else: message = "No old entries were found"
     return message
 
+@task
+def delete_old(paste):
+    if paste.txt_file: paste.txt_file.delete()            
+    paste.delete()
+    return 
+    

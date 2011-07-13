@@ -9,6 +9,7 @@ urlpatterns = patterns('',
     (r'^(?P<code_id>\d+)/$', views.detail),
     (r'^detail/(?P<code_id>\d+)/$', views.detail),
     (r'^plain/(?P<code_id>\d+)/$', views.plain),
+    (r'^pdf/(?P<code_id>\d+)/(?P<style_id>\w+)/$', views.pdf),
     (r'^html/(?P<code_id>\d+)/(?P<style_id>\w+)/$', views.html),
 ) 
 

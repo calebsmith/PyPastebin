@@ -19,36 +19,16 @@
                 </form>        
             </div>       
         {% endif %}        
-
+        
+       
+        
         <!--Title-->
         <div id="title_and_styler">
             <div id="paste_title"><h2>{{paste.title|title}}</h2></div>                   
         </div>   
-    
-        <div id="paste_info">    
-            <!--Author-->
-            <p>
-                Submitted by 
-                {% if paste.author != 'an unknown author' %}
-                    {{paste.author|title}}
-                {% else %}
-                    {{paste.author}}
-                {% endif %} 
-                
-            <!--Email-->
-                {% if paste.email %} at 
-                    {{paste.email}}
-                {% endif %} 
-                on {{paste.pub_date}}       
-            
-            <!--Language-->    
-                Written in
-                {% if paste.get_language_display %}
-                    {{paste.get_language_display}}
-                {% else %} 
-                    an unspecified programming language                  
-                {% endif %}
-        </div>
+        
+        <!--Info-->    
+        {% include "pastey/pasteinfo.html" %}
 
         <!--Code paste tabs-->
         <div id="detail_options">
@@ -70,6 +50,7 @@
             <!--Alternate detail tabs-->
             <span id="plain_tab"><a href="/pastey/plain/{{paste.id}}/">Plain</a></span>
             <span id="html_tab"><a href="/pastey/html/{{paste.id}}/{{current_style}}">HTML</a></span>            
+            <span id="pdf_tab"><a href="/pastey/pdf/{{paste.id}}/{{current_style}}">PDF</a></span>     
             <span id="copy_tab"><a href="/pastey/edit/{{paste.id}}">Copy</a></span>
             <span id="download_tab"><a href="{{paste.txt_file.url}}">Download</a></span>
         </div>

@@ -1,6 +1,0 @@
-echo on
-prompt off
-autolook off
-add 0 1
-end
-

@@ -28,9 +28,10 @@ class Code(models.Model):
     email = models.EmailField(max_length = 50, blank=True,null=True)
 
     private = models.BooleanField()
+    
     pub_date = models.DateTimeField()
     del_date = models.DateTimeField()
-
+    
     def __unicode__(self):
         return self.title
 
@@ -42,7 +43,7 @@ class CodeForm(ModelForm):
 
     class Meta:
         model = Code
-        exclude = ('pub_date','del_date')     
+        exclude = ('pub_date','del_date', 'hits')     
         
     def file_delete(self):
         code = super(CodeForm, self).save(commit=False)
@@ -50,10 +51,12 @@ class CodeForm(ModelForm):
         return code
         
     def save(self):
+
         code = super(CodeForm, self).save(commit=False)
         
         code.pub_date = datetime.datetime.now()
         code.del_date = datetime.datetime.now() + relativedelta(days=+7)
+        code.hits = 0
 
         if code.txt_file:
             #Use the filename as the title if the user does not choose a title
@@ -100,7 +103,7 @@ class CodeForm(ModelForm):
 
 class Style(models.Model):
 
-    highlight = models.CharField('Style',max_length = 50, blank=True,null=True, choices=(STYLE_CHOICES))
+    highlight = models.CharField('Theme',max_length = 50, blank=True,null=True, choices=(STYLE_CHOICES))
 	
     def __unicode__(self):
         return self.highlight

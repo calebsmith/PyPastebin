@@ -14,7 +14,7 @@ CELERY_AMQP_TASK_RESULT_EXPIRES = 300
 
 CELERYBEAT_SCHEDULE = {
     "check-for-old-entries": {
-        "delete_old": "tasks.delete_old",
+        "find_old": "tasks.find_old",
         "args": ()
     },
 }

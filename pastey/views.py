@@ -12,6 +12,7 @@ from django import forms
 from pastey.models import *
 from pastey.pretty import * 
 from pastey.choices import *
+from pastey.pdf import *
 
 def list_page(request, code_id = 1):
     """List all public pastebin submissions
@@ -69,7 +70,7 @@ def index(request, edit_id = None):
     if request.method == 'POST':         
         form = CodeForm(request.POST, request.FILES)
         code_paste = request.POST.get('code_paste')  
-       
+        
         #check form validation, and the user must type the code or upload a file   
         if form.is_valid() and (request.FILES or code_paste):    
             #save to db and save the uploaded file or create own
@@ -140,8 +141,8 @@ def detail(request, code_id):
     #send style name to the template for alternate detail views such as copy
     current_style = style_choice.highlight
     
-    last_paste_link = cookie_checker(request)       
-         
+    last_paste_link = cookie_checker(request)     
+      
     return render_to_response('pastey/detail.html',{
         'paste': paste, 
         'code': pretty_code, 
@@ -150,6 +151,24 @@ def detail(request, code_id):
         'current_style': current_style,
         'last_paste': last_paste_link,
         }, context_instance=RequestContext(request))
+
+def pdf(request, code_id, style_id):
+    paste = get_object_or_404(Code, pk = code_id)
+    
+    style_choice = Style()		#To hold the user's chosen highlight style     
+
+    style_choice.highlight = style_id
+    pretty_code, css_style = pretty_print(paste, style_choice)
+    
+    return render_to_pdf(
+            'pastey/pdf.html',
+            {
+                'pagesize':'A4',
+                'paste': paste,
+                'code': pretty_code,
+                'css_style': css_style,
+            }
+        )
 
 def plain(request, code_id):
     """An HTML document with only the plain text of a paste
@@ -171,7 +190,7 @@ def html(request, code_id, style_id):
     style_choice = Style()		#To hold the user's chosen highlight style     
 
     style_choice.highlight = style_id
-    pretty_code, css_style = pretty_print(paste, style_choice, "inline", True)
+    pretty_code, css_style = pretty_print(paste, style_choice, "table", True)
     last_paste_link = cookie_checker(request)    
         
     return render_to_response('pastey/html.html',{
