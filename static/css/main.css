@@ -22,7 +22,6 @@ hr {
 #masthead{
     display: block;
     background-color:#FEFFA0;
-/*    //FEFE90*/
     margin: 15px 5px 0px 5px;
     padding: 0px 10px;
     height: 60px;
@@ -94,16 +93,17 @@ hr {
 #styler {
     position: relative;   
     top: -25px;
-    left: -70px;
+    left: -30px;
     display: inline;
     float: left;
     padding: 0px 5px;
     margin: 0px;
 }
-    /*tabs in detail view */
+   /*tabs in detail view */
 #plain_tab a:link, #plain_tab a:visited,
 #copy_tab a:link, #copy_tab a:visited, 
 #html_tab a:link, #html_tab a:visited,
+#pdf_tab a:link, #pdf_tab a:visited,
 #download_tab a:link, #download_tab a:visited{
     display: inline;    
     text-align: center;
@@ -116,6 +116,7 @@ hr {
 #plain_tab a:hover, #plain_tab a:active,
 #copy_tab a:hover, #copy_tab a:active, 
 #html_tab a:hover, #html_tab a:active,
+#pdf_tab a:hover, #pdf_tab a:active,
 #download_tab a:hover, #download_tab a:active{
     text-align: left;
     position: relative;
@@ -134,7 +135,21 @@ hr {
     z-index: 0;
     padding: 3px 9px;
 }
+
+/* in pdf */
+
+
+/*style the submitted text with css in the list or detail view (already pretty_printed)*/
+#detail_code .source, #list_code .source {
+    overflow: auto;
+    width: 710px;
+    display: block;
+    margin: 0px 0px;
+    padding: 7px 4px;
+    border: 8px solid #FEFEA0;
+}
 /* list view */
+
 #search {
    
 }
@@ -156,18 +171,7 @@ hr {
     margin: 0px 5px;
 }
 
-/*style the submitted text with css cross-site (already pretty_printed)*/
-.source {
-    overflow: auto;
-    width: 710px;
-    display: block;
-    margin: 0px 0px;
-    padding: 7px 4px;
-    border: 8px solid #FEFEA0;
-}
-.linenodiv{
-    background-color: #000;
-}
+
 /*Site links on post-it background*/
 .site_link a:link, .site_link a:visited{
     color:#404010;
