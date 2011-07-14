@@ -91,11 +91,7 @@ class CodeForm(ModelForm):
             code.txt_file.save(name, content)
             code.txt_file.close()
             
-        if not code.author:code.author = 'an unknown author'
-        if not code.language:
-            pass
-            #code.title += ".txt"
-            #code.language = 'text'
+        if not code.author:code.author = 'an unknown author'      
         
         code.save()
         return code
