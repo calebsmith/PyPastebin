@@ -1,0 +1,25 @@
+<div id="paste_info">    
+    <!--Author-->
+    <p>
+        Submitted by 
+        {% if paste.author != 'an unknown author' %}
+            {{paste.author|title}}
+        {% else %}
+            {{paste.author}}
+        {% endif %} 
+        
+    <!--Email-->
+        {% if paste.email %} at 
+            {{paste.email}}
+        {% endif %} 
+        on {{paste.pub_date}}       
+    
+    <!--Language-->    
+        Written in
+        {% if paste.get_language_display %}
+            {{paste.get_language_display}}
+        {% else %} 
+            an unspecified programming language                  
+        {% endif %}
+    </p>
+</div>

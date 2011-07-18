@@ -1,9 +1,5 @@
 from datetime import datetime, timedelta
-try:
-    from cStringIO import StringIO
-except:
-    from StringIO import StringIO
-    
+import cStringIO as StringIO
 from cgi import escape
 
 from django.template.loader import get_template
@@ -43,7 +39,6 @@ def create_pdf(template_src, context_dict):
     template = get_template(template_src)
     context = Context(context_dict)
     html  = template.render(context)
-    result = StringIO()
-    pdf = pisa.pisaDocument(StringIO(html.encode("ISO-8859-1")), result)
-    return pdf, result, html
-
+    result = StringIO.StringIO()
+    pdf = pisa.pisaDocument(StringIO.StringIO(html.encode("ISO-8859-1")), result)
+    return pdf, result

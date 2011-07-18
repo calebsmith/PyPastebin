@@ -1,0 +1,60 @@
+{% extends "pastey/base.html" %}
+
+{% block title %}PyPastebin - PDF view{% endblock %}
+
+{% block style %}
+    @page {
+        size: {{pagesize}};
+        margin: 1cm;
+        @frame footer {
+            -pdf-frame-content: footerContent;
+            bottom: 0cm;
+            margin-left: 9cm;
+            margin-right: 9cm;
+            height: 1cm;
+        }
+    }
+    {{css_style|safe}}
+{% endblock %}
+
+{% block masthead %}  
+ 
+    <!--Title-->
+    <div id="title_and_styler">
+        <div id="paste_title"><h2>{{paste.title|title}}</h2></div>                   
+    </div>   
+    
+    <!--Info-->   
+    <div id="paste_info">    
+        <!--Author-->
+        <p>            
+            {% if paste.author != 'an unknown author' %}
+                &nbsp; by 
+                {{paste.author|title}}
+            {% endif %} 
+            
+        <!--Email-->
+            {% if paste.email %} at 
+                {{paste.email}}
+            {% endif %}                
+        
+        <!--Language-->               
+            {% if paste.get_language_display %}
+                 &nbsp;--&nbsp;Written in {{paste.get_language_display}}
+            {% endif %}
+        </p>
+    </div>     
+    
+{% endblock %}
+
+{% block content %}       
+    <p>{{code|safe}}</p>
+    <div id="footerContent">        
+        Page <pdf:pagenumber>
+    </div>   
+{% endblock %}
+
+
+
+
+    

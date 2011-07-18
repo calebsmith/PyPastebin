@@ -4,6 +4,9 @@
 {% block style %}
     {{css_style}}
 {% endblock %}
+{% block script %}
+    <script type="text/javascript" language="Javascript" src="{{STATIC_URL}}js/load.js"></script>
+{% endblock %}
 {% block masthead %}
     {% include "pastey/masthead.html" %}  
 {% endblock %}
@@ -34,27 +37,47 @@
         <div id="detail_options">
             <!--Style chooser drop down menu and submit button-->
             <div id="styler">
-                <form name = "styler" action="#" method="post">{% csrf_token %}
+                <form name = "styler" action="#" method="get">
                         <table>
 	                        <tr>
 	                            <td>{{style_chooser.label}}</td>
 	                            <td>{{style_chooser.as_p}}</td>
-	                            <td>
-	                                <input type="submit" name="style_change" value="Change Style" />
-                                </td>
+	                            <noscript>
+	                                <td>
+	                                    <input type="submit" name="style_change" value="Change Style" />
+                                    </td>
+                                </noscript>
 	                        </tr>
                         </table>	
                 </form>
             </div>	
                    
             <!--Alternate detail tabs-->
+            
             <span id="plain_tab"><a href="/pastey/plain/{{paste.id}}/">Plain</a></span>
             <span id="html_tab"><a href="/pastey/html/{{paste.id}}/{{current_style}}">HTML</a></span>            
-            <span id="pdf_tab"><a href="/pastey/pdf/{{paste.id}}/{{current_style}}">PDF</a></span>     
+            <span id="pdf_tab"><a href="/pastey/pdf/{{paste.id}}/{{current_style}}">PDF</a></span>
+
+
+<!--            <form id="pdf" name = "pdf" action="#" method="post">{% csrf_token %}-->
+<!--                <span id="pdf_tab"><a href="#" onclick="document.getElementById('pdf').submit(); return false;">PDF</a></span>-->
+<!--            </form>-->
+            
+            
+<!--           <span id="pdf_tab"><a href="/pastey/pdf/{{paste.id}}/{{current_style}}" onclick="clicked()">PDF</a></span>-->
+
+<!--            <form name = "pdf" action="#" method="post">{% csrf_token %}-->
+<!--                <input type="submit" name ="pdf" value = "PDF" onclick="clicked();"/>-->
+<!--                <input type="submit" name ="pdf" value = "PDF" />-->
+<!--            </form>-->
+            
+<!--            <span id="jpg_tab"><a href="/pastey">JPG</a></span>-->
             <span id="copy_tab"><a href="/pastey/edit/{{paste.id}}">Copy</a></span>
             <span id="download_tab"><a href="{{paste.txt_file.url}}">Download</a></span>
         </div>
-        
+        <div id="detail_loading">
+            <p> PDF Loading...</p>
+        </div>
         <!--Formatted text-->
         <div id="detail_code">            
             {{code|safe}}

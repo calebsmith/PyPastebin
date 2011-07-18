@@ -15,7 +15,6 @@ from pygments.lexers import get_lexer_for_filename
 from pastey.choices import *
 from pastey.pretty import find_lang_ext, find_file_lexer
 
-
 class Code(models.Model):
     code_paste = models.TextField('Code', blank=True, null=True)
     language = models.CharField(max_length = 25, choices=(LANG_CHOICES), blank=True,null=True, default="python")
@@ -116,5 +115,4 @@ class  SearchForm(forms.Form):
     field_choices = [('title', 'Title') ,('author', 'Author'),('email', 'Email'),('language','Language')]
     keyword = forms.CharField(max_length = 50)
     field = forms.CharField(widget = forms.Select(choices=field_choices))
-
 
