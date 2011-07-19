@@ -94,6 +94,5 @@ $(document).ready(function(){
 
     $('select').attr('onchange',"this.form.submit()");
 
-       
    // $.get('', function(response) {if (response == 1){div_toggler.toggle(0);}});
 });

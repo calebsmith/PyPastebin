@@ -9,8 +9,6 @@ from django.core.paginator import Paginator
 from django.contrib.sessions.backends.db import SessionStore
 from django import forms
 
-from utils.jsonutils import *
-
 from pastey.models import *
 from pastey.pretty import * 
 from pastey.choices import *

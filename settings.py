@@ -11,7 +11,6 @@ MANAGERS = ADMINS
 SEND_BROKEN_LINK_EMAILS = True
 
 #For using MySQL
-
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
@@ -59,7 +58,7 @@ MEDIA_URL = '/media/'
 # Don't put anything in this directory yourself; store your static files
 # in apps' "static/" subdirectories and in STATICFILES_DIRS.
 # Example: "/home/media/media.lawrence.com/static/"
-STATIC_ROOT = '/home/caleb/Documents/Caktus/tutorial/paste/static'
+STATIC_ROOT = '/home/caleb/Documents/Caktus/tutorial/paste/static/'
 
 # URL prefix for static files.
 # Example: "http://media.lawrence.com/static/"
@@ -112,18 +111,20 @@ TEMPLATE_DIRS = (
    '/home/caleb/Documents/Caktus/tutorial/paste/templates/'
 )
 
-INSTALLED_APPS = (
+
+INSTALLED_APPS = (    
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.sites',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'django.contrib.admin',
     
-   # 'south',
+    'south',
     'djcelery',
     'pastey', 
+    
+    'django.contrib.admin',
      #Uncomment the next line to enable admin documentation:
      #'django.contrib.admindocs',
 )
@@ -150,7 +151,6 @@ LOGGING = {
         },
     }
 }
-
 
 
 import djcelery

@@ -87,17 +87,31 @@ hr {
     display: inline-block;
     float: right;
     margin: 1px 0px;
+    z-index: 1;   
+}
+#detail_options form{
+    display: inline;
+}
+#detail_loading{
+    position: relative;
+    top: -25px;
+    left: 0px;
+    text-align: center;
+    display: none;
     z-index: 1;
 }
    /* style chooser in detail view */
 #styler {
     position: relative;   
     top: -25px;
-    left: -30px;
+    left: 0px;
     display: inline;
     float: left;
     padding: 0px 5px;
     margin: 0px;
+}
+#styler table{
+    display: block;
 }
    /*tabs in detail view */
 #plain_tab a:link, #plain_tab a:visited,
