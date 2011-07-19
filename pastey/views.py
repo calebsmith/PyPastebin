@@ -116,8 +116,9 @@ def detail(request, code_id):
     text are also provided.
     """
     paste = get_object_or_404(Code, pk = code_id)	
-    style_choice = Style()		#To hold the user's chosen highlight style 
+
     style_menu = StyleForm()	#To display the style menu for the user to choose from
+    style_choice = Style()
   
     #handle form requests 
     if request.method == 'POST':
@@ -130,30 +131,15 @@ def detail(request, code_id):
             
             request.session['member_id'] = 0
             request.session.set_test_cookie()
-            return redirect('pastey.views.index')
-            
-        
-    #request to generate a PDF
-    if request.method == 'POST':
-        pretty_code, css_style = pretty_print(paste, style_choice)
-        return render_to_pdf('pastey/pdf.html',
-            {
-            'pagesize':'A4',
-            'paste': paste,
-            'code': pretty_code,
-            'css_style': css_style,
-            })    
+            return redirect('pastey.views.index')            
             
     if request.method == 'GET':
         form = StyleForm(request.GET)
         if form.is_valid():
-            style_choice.highlight = form.cleaned_data['highlight']	   
+            style_choice.highlight = form.cleaned_data['highlight']
             
     
-    pretty_code, css_style = pretty_print(paste, style_choice)
-    
-    #send style name to the template for alternate detail views such as copy
-    current_style = style_choice.highlight    
+    pretty_code, css_style = pretty_print(paste, style_choice)    
     
     last_paste_link = cookie_checker(request)      
       
@@ -162,12 +148,12 @@ def detail(request, code_id):
         'code': pretty_code, 
         'css_style': css_style, 
         'style_chooser': style_menu,
-        'current_style': current_style,
+        'current_style': style_choice.highlight,
         'last_paste': last_paste_link,
         }, context_instance=RequestContext(request))
         
 def pdf(request, code_id, style_id):
-    #pdf_load.send(sender=self, state=0)
+
     paste = get_object_or_404(Code, pk = code_id)	
     style_choice = Style()		#To hold the user's chosen highlight style     
 

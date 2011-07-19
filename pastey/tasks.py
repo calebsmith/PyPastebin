@@ -18,7 +18,7 @@ import ho.pisa as pisa
 from pastey.models import Code, CodeForm
 
 
-@periodic_task(run_every=timedelta(seconds=900))
+@periodic_task(run_every=timedelta(seconds=1800))
 def find_old():
     delete_sum = 0
     paste_list = Code.objects.all()

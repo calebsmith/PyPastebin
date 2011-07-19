@@ -56,22 +56,7 @@
             
             <span id="plain_tab"><a href="/pastey/plain/{{paste.id}}/">Plain</a></span>
             <span id="html_tab"><a href="/pastey/html/{{paste.id}}/{{current_style}}">HTML</a></span>            
-            <span id="pdf_tab"><a href="/pastey/pdf/{{paste.id}}/{{current_style}}">PDF</a></span>
-
-
-<!--            <form id="pdf" name = "pdf" action="#" method="post">{% csrf_token %}-->
-<!--                <span id="pdf_tab"><a href="#" onclick="document.getElementById('pdf').submit(); return false;">PDF</a></span>-->
-<!--            </form>-->
-            
-            
-<!--           <span id="pdf_tab"><a href="/pastey/pdf/{{paste.id}}/{{current_style}}" onclick="clicked()">PDF</a></span>-->
-
-<!--            <form name = "pdf" action="#" method="post">{% csrf_token %}-->
-<!--                <input type="submit" name ="pdf" value = "PDF" onclick="clicked();"/>-->
-<!--                <input type="submit" name ="pdf" value = "PDF" />-->
-<!--            </form>-->
-            
-<!--            <span id="jpg_tab"><a href="/pastey">JPG</a></span>-->
+            <span id="pdf_tab"><a href="/pastey/pdf/{{paste.id}}/{{current_style}}">PDF</a></span>            
             <span id="copy_tab"><a href="/pastey/edit/{{paste.id}}">Copy</a></span>
             <span id="download_tab"><a href="{{paste.txt_file.url}}">Download</a></span>
         </div>

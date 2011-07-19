@@ -92,7 +92,7 @@ class CodeTestCase(TestCase):
         self.assertEqual(detail_response.context['paste'].title, 
             'Untitled Submission')
         self.assertEqual(detail_response.context['paste'].language, 
-            'text')
+             None)
         #Is submitted data received?
         self.assertEqual(detail_response.context['paste'].code_paste,
             'test the textarea')
@@ -117,6 +117,11 @@ class CodeTestCase(TestCase):
             + DEFAULT_STYLE + "/")
         self.assertEqual(html_response.status_code, 200)
         self.assertContains(html_response, "<pre>")
+        
+    def test_pdf(self):
+        pdf_response = self.client.get('/pastey/pdf/1/' 
+            + DEFAULT_STYLE + "/")
+        self.assertEqual(pdf_response.status_code, 200)
         
     def test_download(self):
         #Can the file be downloaded?

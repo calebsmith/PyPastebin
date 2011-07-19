@@ -13,7 +13,22 @@ from dateutil.relativedelta import relativedelta
 from pygments.lexers import get_lexer_for_filename
 
 from pastey.choices import *
-from pastey.pretty import find_lang_ext, find_file_lexer
+from pastey.pretty import find_lang_ext, find_file_lexer, DEFAULT_STYLE
+
+
+class Style(models.Model):
+
+    highlight = models.CharField('Theme',max_length = 50, blank=True,null=True, choices=(STYLE_CHOICES))
+	
+    def __unicode__(self):
+        return self.highlight
+
+
+class StyleForm(ModelForm):
+	
+    class Meta:
+        model = Style
+
 
 class Code(models.Model):
     code_paste = models.TextField('Code', blank=True, null=True)
@@ -25,11 +40,11 @@ class Code(models.Model):
     title = models.CharField(max_length = 50, blank=True, null=True)	
     author = models.CharField(max_length = 50, blank=True,null=True)
     email = models.EmailField(max_length = 50, blank=True,null=True)
-
+   
     private = models.BooleanField()
     
     pub_date = models.DateTimeField()
-    del_date = models.DateTimeField()
+    del_date = models.DateTimeField()    
     
     def __unicode__(self):
         return self.title
@@ -42,19 +57,18 @@ class CodeForm(ModelForm):
 
     class Meta:
         model = Code
-        exclude = ('pub_date','del_date', 'hits')     
+        exclude = ('pub_date','del_date')     
         
     def file_delete(self):
         code = super(CodeForm, self).save(commit=False)
         code.txt_file.delete()
         return code
         
-    def save(self):
-
+    def save(self):  
         code = super(CodeForm, self).save(commit=False)
         
         code.pub_date = datetime.datetime.now()
-        code.del_date = datetime.datetime.now() + relativedelta(days=+7)
+        code.del_date = datetime.datetime.now() + relativedelta(days = +7)
         code.hits = 0
 
         if code.txt_file:
@@ -80,9 +94,9 @@ class CodeForm(ModelForm):
             
         else:
 
-            ext = find_lang_ext(code.language)   
+            ext = find_lang_ext(code.language)
             
-            if not code.title: code.title = 'file'          
+            if not code.title: code.title = 'file'
             name = code.title + str(code.pub_date.strftime('%f')) + ext
             if code.title == 'file': code.title = "Untitled Submission"
             
@@ -90,24 +104,10 @@ class CodeForm(ModelForm):
             code.txt_file.save(name, content)
             code.txt_file.close()
             
-        if not code.author:code.author = 'an unknown author'      
+        if not code.author: code.author = 'an unknown author'   
         
         code.save()
         return code
-
-
-class Style(models.Model):
-
-    highlight = models.CharField('Theme',max_length = 50, blank=True,null=True, choices=(STYLE_CHOICES))
-	
-    def __unicode__(self):
-        return self.highlight
-
-
-class StyleForm(ModelForm):
-	
-    class Meta:
-        model = Style
 
 
 class  SearchForm(forms.Form):
